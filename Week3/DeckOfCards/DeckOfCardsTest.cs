@@ -8,6 +8,7 @@ public class DeckOfCardsTest
     {
         TestShuffle();
         TestSameFacesInHand();
+        TestTwoTimesTwoSameFacesInHand();
     }
 
     public static void TestShuffle()
@@ -28,12 +29,22 @@ public class DeckOfCardsTest
 
     public static void TestSameFacesInHand()
     {
+        Console.WriteLine("Testing TwoSameFacesInHand()");
         DeckOfCards myDeckOfCards = new DeckOfCards();
         myDeckOfCards.Shuffle();
-
         myDeckOfCards.FillHand();
         myDeckOfCards.PrintHand();
         Console.WriteLine(myDeckOfCards.TwoSameFacesInHand());
+    }
+
+    public static void TestTwoTimesTwoSameFacesInHand()
+    {
+        Console.WriteLine("Testing TwoTimesTwoSameFacesInHand()");
+        DeckOfCards myDeckOfCards = new DeckOfCards();
+        myDeckOfCards.Shuffle();
+        myDeckOfCards.FillHand();
+        myDeckOfCards.PrintHand();
+        Console.WriteLine(myDeckOfCards.TwoTimesTwoSameFacesInHand());
     }
 }
 

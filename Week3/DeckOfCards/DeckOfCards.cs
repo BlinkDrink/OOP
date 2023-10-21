@@ -112,7 +112,7 @@ public class DeckOfCards
     /// </summary>
     /// <param name="face">Optional parameter to check for that specifeid face. Check for any otherwise</param>
     /// <returns>True if there are two cards of the same face, false otherwise</returns>
-    public bool TwoSameFacesInHand(string? face = null)
+    public bool TwoSameFacesInHand()
     {
         if (handOfCards.Length == 0)
         {
@@ -121,22 +121,7 @@ public class DeckOfCards
         }
 
         int[] countPerFace = totalHand();
-        if (face != null)
-        {
-            int faceIndex = Array.IndexOf(faces, face);
-            if (countPerFace[faceIndex] == 2)
-                return true;
-        }
-        else
-        {
-            for (int i = 0; i < countPerFace.Length; i++)
-            {
-                if (countPerFace[i] == 2)
-                    return true;
-            }
-        }
-
-        return false;
+        return countPerFace.Where(x => x == 2).Count() >= 1 ? true : false;
     }
 
     /// <summary>
@@ -145,7 +130,7 @@ public class DeckOfCards
     /// </summary>
     /// <param name="face"></param>
     /// <returns></returns>
-    public bool TwoTimesTwoSameFacesInHand(string? face = null)
+    public bool TwoTimesTwoSameFacesInHand()
     {
         if (handOfCards.Length == 0)
         {
@@ -154,22 +139,7 @@ public class DeckOfCards
         }
 
         int[] countPerFace = totalHand();
-        if (face != null)
-        {
-            int faceIndex = Array.IndexOf(faces, face);
-            if (countPerFace[faceIndex] == 2)
-                return true;
-        }
-        else
-        {
-            for (int i = 0; i < countPerFace.Length; i++)
-            {
-                if (countPerFace[i] == 2)
-                    return true;
-            }
-        }
-
-        return false;
+        return countPerFace.Where(x => x == 2).Count() == 2 ? true : false;
     }
 
     public void PrintHand()
