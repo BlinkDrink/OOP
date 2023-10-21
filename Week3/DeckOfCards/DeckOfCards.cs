@@ -42,11 +42,15 @@ public class DeckOfCards
     /// <returns></returns>
     private int[] totalHand()
     {
+        // Initialize the count array with zeroes 
         int[] countPerFace = new int[13];
+        Array.Fill(countPerFace, 0);
 
+        // Count the occurence of each face 
         foreach (Card card in handOfCards)
         {
-            int cardIndex;
+            int cardIndex = Array.IndexOf(faces, card.Face);
+            countPerFace[cardIndex]++;
         }
 
         return countPerFace;
@@ -93,9 +97,8 @@ public class DeckOfCards
         // Check if we have enough cards, if not the ask to reshuffle the deck
         if (currentCard >= deck.Length - 5)
         {
-            Console.WriteLine("Not enough cards to fill the hand anew. Do you want to reshuffle (y/n)?");
-            string? answer = Console.ReadLine();
-            if (answer == "y") { Shuffle(); }
+            Console.WriteLine("Not enough cards to fill the hand anew.");
+            return;
         }
 
         // Draw 5 cards to fill the hand
@@ -104,20 +107,77 @@ public class DeckOfCards
     }
 
     /// <summary>
-    /// Draw 5 cards to fill the current hand
+    /// Draw 5 cards to fill the current hand then check if there are 2 cards
+    /// whoose faces match
     /// </summary>
-    /// <param name="face"></param>
+    /// <param name="face">Optional parameter to check for that specifeid face. Check for any otherwise</param>
     /// <returns>True if there are two cards of the same face, false otherwise</returns>
-    public bool TwoSameFacesInHand(string face)
+    public bool TwoSameFacesInHand(string? face = null)
     {
-
-
-        if (currentCard >= deck.Length)
+        if (handOfCards.Length == 0)
         {
-            Console.WriteLine("All cards have been dealt! Shuffle the deck to begin anew.");
+            Console.WriteLine("Cannot check on an empty hand.");
             return false;
         }
+
+        int[] countPerFace = totalHand();
+        if (face != null)
+        {
+            int faceIndex = Array.IndexOf(faces, face);
+            if (countPerFace[faceIndex] == 2)
+                return true;
+        }
+        else
+        {
+            for (int i = 0; i < countPerFace.Length; i++)
+            {
+                if (countPerFace[i] == 2)
+                    return true;
+            }
+        }
+
         return false;
+    }
+
+    /// <summary>
+    /// Check ifthe current hand  has 2 cards
+    /// whoose faces match and another 2 cards whoose faces match
+    /// </summary>
+    /// <param name="face"></param>
+    /// <returns></returns>
+    public bool TwoTimesTwoSameFacesInHand(string? face = null)
+    {
+        if (handOfCards.Length == 0)
+        {
+            Console.WriteLine("Cannot check on an empty hand.");
+            return false;
+        }
+
+        int[] countPerFace = totalHand();
+        if (face != null)
+        {
+            int faceIndex = Array.IndexOf(faces, face);
+            if (countPerFace[faceIndex] == 2)
+                return true;
+        }
+        else
+        {
+            for (int i = 0; i < countPerFace.Length; i++)
+            {
+                if (countPerFace[i] == 2)
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
+    public void PrintHand()
+    {
+        for (int i = 0; i < handOfCards.Length; i++)
+        {
+            Console.Write("{0,-19}", handOfCards[i]);
+        }
     }
     #endregion
 }

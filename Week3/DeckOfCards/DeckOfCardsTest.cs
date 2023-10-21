@@ -6,6 +6,12 @@ public class DeckOfCardsTest
     // execute application
     public static void Main(string[] args)
     {
+        TestShuffle();
+        TestSameFacesInHand();
+    }
+
+    public static void TestShuffle()
+    {
         DeckOfCards myDeckOfCards = new DeckOfCards();
         myDeckOfCards.Shuffle(); // place Cards in random order
 
@@ -17,6 +23,17 @@ public class DeckOfCardsTest
             if ((i + 1) % 4 == 0)
                 Console.WriteLine();
         }
+        Console.WriteLine();
+    }
+
+    public static void TestSameFacesInHand()
+    {
+        DeckOfCards myDeckOfCards = new DeckOfCards();
+        myDeckOfCards.Shuffle();
+
+        myDeckOfCards.FillHand();
+        myDeckOfCards.PrintHand();
+        Console.WriteLine(myDeckOfCards.TwoSameFacesInHand());
     }
 }
 
