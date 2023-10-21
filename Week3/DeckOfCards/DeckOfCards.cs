@@ -103,7 +103,7 @@ public class DeckOfCards
 
         // Draw 5 cards to fill the hand
         for (int i = 0; i < CARDS_IN_HAND; i++)
-            handOfCards[i] = DealCard()!;
+            handOfCards[i] = DealCard();
     }
 
     /// <summary>
@@ -125,7 +125,7 @@ public class DeckOfCards
     }
 
     /// <summary>
-    /// Check ifthe current hand  has 2 cards
+    /// Check if the current hand  has 2 cards
     /// whoose faces match and another 2 cards whoose faces match
     /// </summary>
     /// <param name="face"></param>
@@ -140,6 +140,22 @@ public class DeckOfCards
 
         int[] countPerFace = totalHand();
         return countPerFace.Where(x => x == 2).Count() == 2 ? true : false;
+    }
+
+    /// <summary>
+    /// Check if the current hand has 3 cards whose faces match
+    /// </summary>
+    /// <returns>True if the hand contains 3 cards of the same face, false otherwise</returns>
+    public bool ThriceSameFaceInHand()
+    {
+        if (handOfCards.Length == 0)
+        {
+            Console.WriteLine("Cannot check on an empty hand.");
+            return false;
+        }
+
+        int[] countPerFace = totalHand();
+        return countPerFace.Where(x => x == 3).Count() == 1 ? true : false;
     }
 
     public void PrintHand()
