@@ -158,6 +158,47 @@ public class DeckOfCards
         return countPerFace.Where(x => x == 3).Count() == 1 ? true : false;
     }
 
+    /// <summary>
+    /// Check if the current hand has 4 cards of the same face
+    /// </summary>
+    /// <returns>True if the hand contains 4 cards of the same hand, false otherwise</returns>
+    public bool FourSameFacesInHand()
+    {
+        if (handOfCards.Length == 0)
+        {
+            Console.WriteLine("Cannot check on an empty hand.");
+            return false;
+        }
+
+        int[] countPerFace = totalHand();
+        return countPerFace.Where(x => x == 4).Count() == 1 ? true : false;
+    }
+
+    /// <summary>
+    /// Check if there are 5 cards with increasingly going faces (i.e. Two, Three, Four, Five, Six)
+    /// </summary>
+    /// <returns>True if there are 5 cards with increasingly going faces, false otherwise</returns>
+    public bool FiveCardsInARow()
+    {
+        if (handOfCards.Length == 0)
+        {
+            Console.WriteLine("Cannot check on an empty hand.");
+            return false;
+        }
+
+        int[] countPerFace = totalHand();
+        int counter = 0;
+        foreach (int times in countPerFace)
+        {
+            if (times > 0)
+                counter++;
+            else
+                counter = 0;
+        }
+
+        return counter == 5 ? true : false;
+    }
+
     public void PrintHand()
     {
         for (int i = 0; i < handOfCards.Length; i++)

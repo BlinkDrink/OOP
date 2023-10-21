@@ -19,6 +19,9 @@ public class DeckOfCardsTest
         Console.WriteLine("------------------------------------");
         Console.WriteLine("Testing ThriceSameFaceInHand()");
         TestThriceSameFaceInHand(deckOfCards);
+        Console.WriteLine("------------------------------------");
+        Console.WriteLine("Testing FourSameFacesInHand()");
+        TestFourSameFacesInHand(deckOfCards);
     }
 
     public static void TestShuffle(DeckOfCards deckOfCards)
@@ -74,6 +77,21 @@ public class DeckOfCardsTest
             deckOfCards.FillHand();
             deckOfCards.PrintHand();
             Console.WriteLine(deckOfCards.ThriceSameFaceInHand());
+            Console.WriteLine("Do you want to refill your hand and try again (y/n)?");
+            string answer = Console.ReadLine();
+            if (answer == "n")
+                break;
+        }
+    }
+
+    public static void TestFourSameFacesInHand(DeckOfCards deckOfCards)
+    {
+        while (true)
+        {
+            deckOfCards.Shuffle();
+            deckOfCards.FillHand();
+            deckOfCards.PrintHand();
+            Console.WriteLine(deckOfCards.FourSameFacesInHand());
             Console.WriteLine("Do you want to refill your hand and try again (y/n)?");
             string answer = Console.ReadLine();
             if (answer == "n")
