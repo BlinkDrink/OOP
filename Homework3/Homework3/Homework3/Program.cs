@@ -9,7 +9,11 @@
             char[] cipherTextChars = cipherText.ToCharArray(); // to char array
             string text = new String(cipherTextChars); // to string
             RouteCipher routeCipher = new RouteCipher(-5);
-            routeCipher.Encrypt(text);
+            string encrypted = routeCipher.Encrypt(text);
+            Console.WriteLine($"The encrypted form of the text is: {encrypted}");
+
+            RouteCipher routeCipher2 = new RouteCipher(5);
+            Console.WriteLine($"The decrypted form of the text is: {routeCipher2.Decrpyt("ATSYVNTEDXXTEANITROBHSOESPOEHOMEIUB")}");
         }
     }
 }
