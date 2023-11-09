@@ -102,17 +102,33 @@
 
         public static void GroupByQtrMinMaxPrice()
         {
+            var result = products.GroupBy(x => x.Quarter).Select(quarter => new
+            {
+                Quarter = quarter.Key,
+                Min = quarter.Min(x => x.Price),
+                Max = quarter.Max(x => x.Price)
+            }).OrderBy(x => x.Quarter);
 
-
+            foreach (var quarterGroup in result)
+            {
+                Console.WriteLine($"Quarter group: {quarterGroup.Quarter}");
+                Console.WriteLine($"\t\tMin price per Quarter: {quarterGroup.Min}");
+                Console.WriteLine($"\t\tMax price per Quarter: {quarterGroup.Max}");
+            }
         }
 
         static void Main(string[] args)
         {
+            Console.WriteLine("\nGroupByCategoryCountDescending()\n");
             GroupByCategoryCountDescending();
+            Console.WriteLine("\nGroupByQtrAndProductPriceAvg()\n");
             GroupByQtrAndProductPriceAvg();
+            Console.WriteLine("\nGroupByQtrCategoryWeeklySum()\n");
             GroupByQtrCategoryWeeklySum();
+            Console.WriteLine("\nGroupByQtrCategoryAndProducts()\n");
             GroupByQtrCategoryAndProducts();
-
+            Console.WriteLine("\nGroupByQtrMinMaxPrice()\n");
+            GroupByQtrMinMaxPrice();
         }
     }
 }
