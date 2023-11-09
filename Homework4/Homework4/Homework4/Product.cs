@@ -20,8 +20,9 @@
         private long cnt;
         private string ID;
         private static Random rnd;
-        private List<int> WeeklyPurchases;
+        private List<int> weeklyPurchases;
 
+        public List<int> WeeklyPurchases { get; set; }
         public Type Category { get; init; }
         public string Description { get; set; }
         public decimal Price { get; set; }
@@ -38,7 +39,8 @@
         /// <param name="price">Initializer of Price</param>
         public Product(string description, Type category, List<int> weeklyPurchases, decimal price)
         {
-            Quarter = (YearlyQuarter)(rnd.Next(3) + 1);
+            rnd = new Random();
+            Quarter = (YearlyQuarter)(rnd.Next(4) + 1);
             Description = description;
             Category = category;
             WeeklyPurchases = weeklyPurchases;

@@ -2,7 +2,7 @@
 {
     internal class Program
     {
-        static List<Product> products = new List<Product> {
+        public static List<Product> products = new List<Product> {
         new Product("Electric sander", Type.M, new List<int> { 99, 82, 81, 79 },  157.98m),
         new Product ("Power saw", Type.M, new List < int > { 99, 86, 90, 94 }, 157.98m) ,
         new Product ( "Sledge hammer", Type.F, new List<int> { 93, 92, 80, 87 },  21.50m ),
@@ -17,10 +17,68 @@
         new Product ( "Screwdriver", Type.M, new List < int > { 96, 85, 51, 30 }, 66.99m ),
         };
 
+        public static void GroupByCategoryCountDescending()
+        {
+            var query = products.GroupBy(x => x.Category, (category, products) => new { Key = category, Count = products.Count() }).OrderByDescending(x => x.Count);
+
+            foreach (var result in query)
+            {
+                Console.WriteLine($"Category group: {result.Key}\n\t\tNumber of products of Type {result.Count} in this group: {result.Count}");
+            }
+        }
+
+        public static void GroupByQtrAndProductPriceAvg()
+        {
+            var query = products.GroupBy(x => x.Quarter).Select(group => new { Quarter = group.Key, AvgPrice = group.Average(product => product.Price) }).OrderBy(x => x.Quarter);
+
+            foreach (var group in query)
+            {
+                Console.WriteLine($"Quarter group: {group.Quarter}\n\tAverage price per Quarter: ${group.AvgPrice:F2}");
+            }
+        }
+
+        public static void GroupByQtrCategoryWeeklySum()
+        {
+            var result = products
+            .GroupBy(product => product.Quarter)
+            .OrderBy(quarterGroup => quarterGroup.Key)
+            .Select(quarterGroup => new
+            {
+                Quarter = quarterGroup.Key,
+                Categories = quarterGroup
+                    .GroupBy(product => product.Category)
+                    .Select(categoryGroup => new
+                    {
+                        Category = categoryGroup.Key,
+                        Products = categoryGroup
+                            .Select(product => new
+                            {
+                                Description = product.Description,
+                                TotalWeeklyPurchases = product.WeeklyPurchases.Sum()
+                            })
+                    }).OrderByDescending(x => x.Category)
+            });
+
+            // Display the results
+            foreach (var quarterGroup in result)
+            {
+                Console.WriteLine($"Quarter group {quarterGroup.Quarter}:");
+                foreach (var categoryGroup in quarterGroup.Categories)
+                {
+                    Console.WriteLine($"\tCategory group {categoryGroup.Category}:");
+                    foreach (var product in categoryGroup.Products)
+                    {
+                        Console.WriteLine($"\t\t({product.Description}, {product.TotalWeeklyPurchases})");
+                    }
+                }
+            }
+        }
 
         static void Main(string[] args)
         {
-            Console.WriteLine("");
+            GroupByCategoryCountDescending();
+            GroupByQtrAndProductPriceAvg();
+            GroupByQtrCategoryWeeklySum();
         }
     }
 }
