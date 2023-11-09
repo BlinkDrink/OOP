@@ -19,10 +19,14 @@
         #region Properties
         private long cnt;
         private string ID;
-        private static Random rnd;
+        private static Random rnd = new Random();
         private List<int> weeklyPurchases;
 
-        public List<int> WeeklyPurchases { get; set; }
+        public List<int> WeeklyPurchases
+        {
+            get { return weeklyPurchases; }
+            private set { weeklyPurchases = value; }
+        }
         public Type Category { get; init; }
         public string Description { get; set; }
         public decimal Price { get; set; }
@@ -39,11 +43,10 @@
         /// <param name="price">Initializer of Price</param>
         public Product(string description, Type category, List<int> weeklyPurchases, decimal price)
         {
-            rnd = new Random();
             Quarter = (YearlyQuarter)(rnd.Next(4) + 1);
             Description = description;
             Category = category;
-            WeeklyPurchases = weeklyPurchases;
+            WeeklyPurchases = new List<int>(weeklyPurchases);
             Price = price;
             ID = $"{Category}{rnd.Next(100001, 999999)}";
         }
@@ -51,7 +54,11 @@
 
         public override string ToString()
         {
-            return $"{Description} {Category} {WeeklyPurchases} {Price}";
+            string s = $"{ID} {WeeklyPurchases.First()}";
+            foreach (var str in WeeklyPurchases.Skip(1))
+                s += $", {str}";
+
+            return s;
         }
     }
 }

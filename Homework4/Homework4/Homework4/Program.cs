@@ -13,7 +13,7 @@
         new Product ( "Wrench", Type.F, new List < int > { 97, 92, 81, 60 }, 17.50m ),
         new Product ( "Sledge hammer", Type.M, new List < int > { 75, 84, 91, 39 }, 21.50m ),
         new Product ( "Hammer", Type.F, new List < int > { 94, 92, 91, 91 }, 11.99m ),
-        new Product ( "Lawn mower", Type.M, new List < int > { 96, 85, 91, 60 }, 179.50m ),
+        new Product ( "Lawn mower", Type.M, new List <int> { 96, 85, 91, 60 }, 179.50m ),
         new Product ( "Screwdriver", Type.M, new List < int > { 96, 85, 51, 30 }, 66.99m ),
         };
 
@@ -62,10 +62,10 @@
             // Display the results
             foreach (var quarterGroup in result)
             {
-                Console.WriteLine($"Quarter group {quarterGroup.Quarter}:");
+                Console.WriteLine($"Quarter group: {quarterGroup.Quarter}");
                 foreach (var categoryGroup in quarterGroup.Categories)
                 {
-                    Console.WriteLine($"\tCategory group {categoryGroup.Category}:");
+                    Console.WriteLine($"\tCategory group: {categoryGroup.Category}");
                     foreach (var product in categoryGroup.Products)
                     {
                         Console.WriteLine($"\t\t({product.Description}, {product.TotalWeeklyPurchases})");
@@ -74,11 +74,45 @@
             }
         }
 
+        public static void GroupByQtrCategoryAndProducts()
+        {
+            var result = products.GroupBy(x => x.Quarter).Select(quarter => new
+            {
+                Quarter = quarter.Key,
+                Categories = quarter.GroupBy(x => x.Category).Select(category => new
+                {
+                    Category = category.Key,
+                    Products = category.Select(product => new { ToPrint = product.ToString() })
+                }).OrderBy(x => x.Category)
+            }).OrderBy(x => x.Quarter);
+
+            foreach (var quarterGroup in result)
+            {
+                Console.WriteLine($"Quarter group: {quarterGroup.Quarter}");
+                foreach (var categoryGroup in quarterGroup.Categories)
+                {
+                    Console.WriteLine($"\tCategory group: {categoryGroup.Category}");
+                    foreach (var product in categoryGroup.Products)
+                    {
+                        Console.WriteLine($"\t\t{product.ToPrint}");
+                    }
+                }
+            }
+        }
+
+        public static void GroupByQtrMinMaxPrice()
+        {
+
+
+        }
+
         static void Main(string[] args)
         {
             GroupByCategoryCountDescending();
             GroupByQtrAndProductPriceAvg();
             GroupByQtrCategoryWeeklySum();
+            GroupByQtrCategoryAndProducts();
+
         }
     }
 }
