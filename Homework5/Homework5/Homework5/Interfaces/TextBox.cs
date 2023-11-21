@@ -2,23 +2,20 @@
 {
     public abstract class TextBox
     {
-        protected string text;
-        protected string baseText;
-
-        public string Text { get => text; private set { text = value; } }
-        public string BaseText { get => baseText; private set { baseText = value; } }
+        protected string? text;
+        protected string? baseText;
 
         #region Constructors
         public TextBox()
         {
-            Text = $"{GetType()}:Type text";
-            BaseText = $"{GetType()}:Type baseText";
+            text = $"{GetType()}:Type text";
+            baseText = $"{GetType()}:Type baseText";
         }
         #endregion
 
         #region Methods
 
-        protected void TypeText() { Console.WriteLine(text); }
+        protected abstract void TypeText();
 
         public abstract void EditTextAllowed();
 
