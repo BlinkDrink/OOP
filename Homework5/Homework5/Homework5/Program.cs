@@ -12,6 +12,17 @@ namespace Homework5
             {
                 Console.Write(countDown.Current);
             }
+            Console.WriteLine();
+        }
+
+        static void TestProblem2c()
+        {
+            CountDownWithOverride countDownWithOverride = new CountDownWithOverride();
+            while (countDownWithOverride.MoveNext())
+            {
+                Console.Write(countDownWithOverride.Current);
+            }
+            Console.WriteLine();
         }
 
         public static void Main(string[] args)
@@ -27,6 +38,7 @@ namespace Homework5
             }
 
             TestProblem2a();
+            TestProblem2c();
         }
     }
 }
