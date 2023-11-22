@@ -2,8 +2,10 @@
 {
     public abstract class TextBox
     {
+        #region Private Fields
         protected string? text;
         protected string? baseText;
+        #endregion
 
         #region Constructors
         public TextBox()

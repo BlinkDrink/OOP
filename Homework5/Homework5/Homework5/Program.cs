@@ -5,6 +5,15 @@ namespace Homework5
 {
     internal class TestPolymorphismProtected
     {
+        static void TestProblem2a()
+        {
+            CountDown countDown = new CountDown();
+            while (countDown.MoveNext())
+            {
+                Console.Write(countDown.Current);
+            }
+        }
+
         public static void Main(string[] args)
         {
             TextBox[] textBoxArray = { new EditTextBox(), new RichTextBox(), new MultlineTextBox() };
@@ -16,6 +25,8 @@ namespace Homework5
                 // As mentioned in the previous classes' implementation, we cannot access protected fields/methods unless
                 // we do so in the derived class itself
             }
+
+            TestProblem2a();
         }
     }
 }
