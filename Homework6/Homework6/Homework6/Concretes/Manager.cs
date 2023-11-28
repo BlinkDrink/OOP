@@ -6,6 +6,5 @@
         public Manager(string name, string worksAt) : base(name, worksAt) { }
 
 
-
     }
 }
