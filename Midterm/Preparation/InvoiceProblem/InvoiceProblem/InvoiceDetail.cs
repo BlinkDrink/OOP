@@ -10,10 +10,9 @@
             set { dblLineTotal = value; }
         }
 
-
-        public InvoiceDetail()
+        public InvoiceDetail(decimal dblLineTotal)
         {
-
+            DblLineTotal = dblLineTotal;
         }
 
         public override string ToString()
