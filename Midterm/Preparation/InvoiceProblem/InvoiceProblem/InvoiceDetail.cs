@@ -17,7 +17,7 @@
 
         public override string ToString()
         {
-            return $"{dblLineTotal:F2}";
+            return DblLineTotal.ToString("C2");
         }
     }
 }

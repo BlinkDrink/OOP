@@ -5,17 +5,31 @@ namespace InvoiceProblem
 {
     public class Invoice : IReceivable, IOutgoing
     {
+        #region Properties
         private static long INVOICE_NUMBER = 0;
-        InvoiceDetail[] invoiceItems;
 
         public long InvoiceNumber { get => INVOICE_NUMBER; }
 
-        public Invoice(InvoiceDetail[] invoiceItems)
+        private List<InvoiceDetail> invoiceItems;
+
+        public List<InvoiceDetail> InvoiceItems
+        {
+            get { return invoiceItems; }
+            set { invoiceItems = value; }
+        }
+        #endregion
+
+        #region Constructors
+        public Invoice(List<InvoiceDetail> invoiceItems)
         {
             INVOICE_NUMBER++;
+            invoiceItems = new List<InvoiceDetail>(invoiceItems);
             this.invoiceItems = invoiceItems;
         }
+        #endregion
 
+
+        #region Methods
         public override string ToString()
         {
             var sb = new StringBuilder();
@@ -54,5 +68,32 @@ namespace InvoiceProblem
 
         decimal IReceivable.InvoiceTotal => InvoiceTotal();
         decimal IOutgoing.InvoiceTotal => -InvoiceTotal();
+
+        public static void PrintInvoices(List<Invoice> invoices)
+        {
+            foreach (var invoice in invoices)
+            {
+                Console.WriteLine($"INVOICE_NUMBER: {invoice.InvoiceNumber}");
+
+                var sortedItems = invoice.InvoiceItems.OrderByDescending(item => item.DblLineTotal);
+
+                foreach (var item in sortedItems)
+                {
+                    Console.WriteLine($"DblLineTotal: {item.ToString()}");
+                }
+
+                if (invoice is IReceivable)
+                {
+                    Console.WriteLine($"InvoiceTotal (IReceivable): {((IReceivable)invoice).InvoiceTotal.ToString("C2")}");
+                }
+                else if (invoice is IOutgoing)
+                {
+                    Console.WriteLine($"InvoiceTotal (IOutgoing): {((IOutgoing)invoice).InvoiceTotal.ToString("C2")}");
+                }
+
+                Console.WriteLine();
+            }
+        }
+        #endregion
     }
 }
