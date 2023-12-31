@@ -33,13 +33,13 @@ namespace InvoiceProblem
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append($"Invoice number: {InvoiceNumber}");
+            sb.Append($"Invoice number: {InvoiceNumber}\n");
 
             if (invoiceItems != null)
             {
                 foreach (var item in invoiceItems)
                 {
-                    sb.Append(item.ToString());
+                    sb.Append(item.ToString() + "\n");
                 }
             }
 
