@@ -6,21 +6,34 @@ namespace TestingVector
     {
         static void Main()
         {
-            // Примери за създаване на обекти от класа Vector
-            Vector v1 = new Vector(0, 3);
-            v1[0] = 0;
-            v1[1] = 1;
-            v1[2] = 2;
+            Vector v1 = new Vector(3, 6); // Създаваме вектор v1, започващ от индекс 3 с дължина 6
+            v1[3] = 0;
+            v1[4] = 1;
+            v1[5] = 2;
+            v1[6] = 3;
+            v1[7] = 4;
+            v1[8] = 5;
 
-            Console.WriteLine(Vector.Count); // Извежда броя на активните обекти
+            Console.WriteLine($"Vector v1: {v1}");
 
-            // Пример за използване на обект от класа Vector
-            Console.WriteLine(v1[0]); // Достъпване на компонент от вектора
+            double evalResult = v1.Evaluate(1);
+            Console.WriteLine($"Evaluation at x = 1: {evalResult}");
 
-            Vector v1Diff = (Vector)v1.Differentiate();
+            Polynomial derivative = v1.Differentiate();
+            Console.WriteLine($"Derivative of v1: {((Vector)derivative).Evaluate(1)}");
 
-            Console.WriteLine(v1Diff.Evaluate(2));
+            VectorNorms norms = new VectorNorms();
+            double firstNorm = norms.FirstNorm(v1);
+            Console.WriteLine($"First Norm of v1: {firstNorm}");
 
+            double secondNorm = norms.SecondNorm(v1);
+            Console.WriteLine($"Second Norm of v1: {secondNorm}");
+
+            Console.WriteLine($"Active Vector objects: {Vector.Count}");
+
+            double normResult = v1.Norm(vector => norms.SecondNorm(vector)); // Пример за използване на разширяващ метод
+
+            Console.WriteLine($"Norm of the vector: {normResult}");
         }
     }
 }

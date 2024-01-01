@@ -9,15 +9,6 @@ namespace VectorImplementation
         protected int i1;
         protected readonly int num;
 
-        public int[] P
-        {
-            get => p;
-            private set
-            {
-                p = value;
-            }
-        }
-
         public int First => i1;
 
         public int Last => i1 + num - 1;
@@ -36,14 +27,17 @@ namespace VectorImplementation
         public Vector(int first_index, int number)
         {
             count++;
-            i1 = first_index < 0 ? 0 : first_index;
+            i1 = first_index;
             num = number;
-            p = new int[number + i1];
+            p = new int[num];
         }
 
-        public Vector(Vector v) : this(v.i1, v.num)
+        public Vector(Vector v)
         {
             count++;
+            i1 = v.i1;
+            num = v.num;
+            p = new int[num];
             Array.Copy(v.p, p, num);
         }
 
@@ -62,32 +56,6 @@ namespace VectorImplementation
             return sb.ToString();
         }
 
-        //public double Evaluate(double x)
-        //{
-        //    double result = 0;
-        //    for (int i = First; i <= Last; i++)
-        //    {
-        //        result += p[i] * Math.Pow(x, i);
-        //    }
-        //    return result;
-        //}
-
-        //public Polynomial Differentiate()
-        //{
-        //    Vector derivative = new Vector(i1 - 1, num);
-        //    for (int i = 0; i < derivative.Length; i++)
-        //    {
-        //        derivative[i] = p[i];
-        //    }
-
-        //    for (int i = derivative.First; i <= derivative.Last; i++)
-        //    {
-        //        derivative[i] = i * derivative[i];
-        //    }
-
-        //    return derivative;
-        //}
-
         public double Evaluate(double x)
         {
             double result = 0;
@@ -100,13 +68,11 @@ namespace VectorImplementation
 
         public Polynomial Differentiate()
         {
-            Vector derivative = new Vector(i1 + 1, num);
-
-            for (int i = First + 1; i <= Last; i++)
+            Vector derivative = new Vector(First - 1, num);
+            for (int i = First; i <= Last; i++)
             {
-                derivative.p[i - i1 - 1] = p[i - i1] * i;
+                derivative[i - 1] = this[i] * i;
             }
-
             return derivative;
         }
 
@@ -114,50 +80,48 @@ namespace VectorImplementation
         {
             get
             {
-                if (index < i1 || index >= i1 + num)
+                if (index < First || index > Last)
                 {
-                    Console.WriteLine("Error: Index out of range");
-                    return -1;
+                    throw new IndexOutOfRangeException("Index out of range");
                 }
-                return p[index + i1];
+                return p[index - First];
             }
             set
             {
-                if (index < i1 || index >= i1 + num)
+                if (index < First || index > Last)
                 {
-                    Console.WriteLine("Error: Index out of range");
-                    return;
+                    throw new IndexOutOfRangeException("Index out of range");
                 }
-                p[index + i1] = value;
+                p[index - First] = value;
             }
         }
 
-        public static Vector? operator +(Vector vector1, Vector vector2)
+        public static Vector operator +(Vector v1, Vector v2)
         {
-            if (vector1.Length != vector2.Length)
+            if (v1.num != v2.num || v1.First != v2.i1)
             {
-                throw new ArgumentException("Error: Cannot add vectors with different lengths");
+                throw new InvalidOperationException("Vectors are incompatible for addition.");
             }
 
-            Vector result = new Vector(vector1);
-            for (int i = 0; i < result.Length; i++)
+            Vector result = new Vector(v1.First, v1.num);
+            for (int i = v1.First; i <= v1.Last; i++)
             {
-                result[i] += vector2[i];
+                result[i] = v1[i] + v2[i];
             }
             return result;
         }
 
-        public static int operator *(Vector vector1, Vector vector2)
+        public static int operator *(Vector v1, Vector v2)
         {
-            if (vector1.Length != vector2.Length)
+            if (v1.num != v2.num || v1.i1 != v2.First)
             {
-                throw new ArgumentException("Error: Cannot apply dot product to vectors with different lengths");
+                throw new InvalidOperationException("Vectors are incompatible for multiplication.");
             }
 
             int result = 0;
-            for (int i = 0; i < vector1.Length; i++)
+            for (int i = v1.First; i < v1.i1 + v1.num; i++)
             {
-                result += vector1[i] * vector2[i];
+                result += v1[i] * v2[i];
             }
             return result;
         }
