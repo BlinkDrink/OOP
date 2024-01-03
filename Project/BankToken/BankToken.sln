@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34330.188
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BankTokenServer", "BankToken\BankTokenServer.csproj", "{8057AC7B-6F47-4851-8EF8-AA480D4D2F2B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BankTokenClient", "BankTokenClient\BankTokenClient.csproj", "{A53F2A22-10D5-4997-A900-FF9F2CA33E09}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8057AC7B-6F47-4851-8EF8-AA480D4D2F2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8057AC7B-6F47-4851-8EF8-AA480D4D2F2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8057AC7B-6F47-4851-8EF8-AA480D4D2F2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8057AC7B-6F47-4851-8EF8-AA480D4D2F2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A53F2A22-10D5-4997-A900-FF9F2CA33E09}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A53F2A22-10D5-4997-A900-FF9F2CA33E09}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A53F2A22-10D5-4997-A900-FF9F2CA33E09}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A53F2A22-10D5-4997-A900-FF9F2CA33E09}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {110A738C-C03B-4166-858B-CDE729F3AC4D}
+	EndGlobalSection
+EndGlobal

@@ -2,7 +2,7 @@
 using System.Data;
 using System.Windows;
 
-namespace TicTacToeClient
+namespace BankToken
 {
     /// <summary>
     /// Interaction logic for App.xaml

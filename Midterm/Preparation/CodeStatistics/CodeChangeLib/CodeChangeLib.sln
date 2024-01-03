@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34330.188
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeChangeLib", "CodeChangeLib\CodeChangeLib.csproj", "{F5045B18-D2E2-4574-8AE6-1DAE4014D6BE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeChangeApp", "CodeChangeApp\CodeChangeApp.csproj", "{3AD6B8DF-B3D0-472C-8F80-069D80F5FEEE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F5045B18-D2E2-4574-8AE6-1DAE4014D6BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F5045B18-D2E2-4574-8AE6-1DAE4014D6BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F5045B18-D2E2-4574-8AE6-1DAE4014D6BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F5045B18-D2E2-4574-8AE6-1DAE4014D6BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3AD6B8DF-B3D0-472C-8F80-069D80F5FEEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3AD6B8DF-B3D0-472C-8F80-069D80F5FEEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3AD6B8DF-B3D0-472C-8F80-069D80F5FEEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3AD6B8DF-B3D0-472C-8F80-069D80F5FEEE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1B04803F-ACE3-41D7-9CF4-63AF8FEE16D1}
+	EndGlobalSection
+EndGlobal
