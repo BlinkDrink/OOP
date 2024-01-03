@@ -25,7 +25,10 @@ namespace CodeChangeApp
         private void AddGeneratedCodesToTextBox(List<int> codes)
         {
             codes.Sort();
-            codesTextBox.Text += string.Join(" ", codes);
+            if (codesTextBox.Text == "")
+                codesTextBox.Text += string.Join(" ", codes);
+            else
+                codesTextBox.Text += " " + string.Join(" ", codes);
         }
 
         private void CodeStatisticsButton_Click(object sender, RoutedEventArgs e)
@@ -41,7 +44,7 @@ namespace CodeChangeApp
                     string spaces = group.Key == 9 ? "  " : "    ";
                     codeStatisticsTextBox.Text += $"Codes between {group.Key * 100} and {(group.Key + 1) * 100}{spaces}have    {group.Distinct().Count()} distinct numbers\n";
                 }
-                codeStatisticsTextBox.Text += $"\nTotal numbers in statistics {allCodes.Count}\n";
+                codeStatisticsTextBox.Text += $"Total numbers in statistics {allCodes.Count}\n";
             }
         }
     }

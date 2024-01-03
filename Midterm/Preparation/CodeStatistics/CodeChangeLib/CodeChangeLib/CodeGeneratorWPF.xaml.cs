@@ -20,13 +20,11 @@ namespace CodeChangeLib
             GeneratedCodeTextBox.Clear();
         }
 
-        // Event handler за натискане на бутона "Generate Random Code"
         private void GenerateRandomCodeButton_Click(object sender, RoutedEventArgs e)
         {
             List<int> numbers = GenerateRandomNumbers();
             DisplayNumbers(numbers);
 
-            // Ако има абонати за събитието CodeChange, изпращаме информацията
             if (CodeChange != null)
             {
                 CodeChangeEventArgs eventArgs = new CodeChangeEventArgs(numbers);
@@ -54,19 +52,16 @@ namespace CodeChangeLib
             return numbers;
         }
 
-        // Показване на числата в текстовото поле
         private void DisplayNumbers(List<int> numbers)
         {
             GeneratedCodeTextBox.Text = string.Join(" ", numbers);
         }
 
-        // Метод за извикване на събитието CodeChange
         protected virtual void OnCodeChange(CodeChangeEventArgs e)
         {
             CodeChange?.Invoke(this, e);
         }
 
-        // Event handler за натискане на бутона "Quit"
         private void QuitButton_Click(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();
