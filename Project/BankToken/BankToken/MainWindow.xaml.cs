@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.IO;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Windows;
@@ -8,34 +9,108 @@ namespace BankTokenServer
 {
     public partial class MainWindow : Window
     {
-        private TcpListener serverSocket;
-        private TcpClient clientSocket;
-        private NetworkStream networkStream;
+        private Thread readThread;
+
+        private Socket? connection;
+        private NetworkStream? socketStream;
+        private BinaryWriter? writer;
+        private BinaryReader? reader;
+
+        //private TcpListener connection;
+        //private TcpClient clientSocket;
+        //private NetworkStream networkStream;
 
         public MainWindow()
         {
             InitializeComponent();
+            readThread = new Thread(new ThreadStart(RunServer));
+            readThread.Start();
         }
 
-        private async void StartServer_Click(object sender, RoutedEventArgs e)
+        private async void RunServer()
         {
+            TcpListener listener;
+            int counter = 1;
+
+            // wait for a client connection and display the text
+            // that the client sends
             try
             {
-                serverSocket = new TcpListener(IPAddress.Any, 8888);
-                serverSocket.Start();
-                LogBox.Text += "Сървърът е стартиран.\n";
+                // Step 1: create TcpListener                    
+                IPAddress local = IPAddress.Parse("127.0.0.1");
+                listener = new TcpListener(local, 50000);
 
-                clientSocket = await serverSocket.AcceptTcpClientAsync();
-                LogBox.Text += "Клиентът се е свързал.\n";
+                // Step 2: TcpListener waits for connection request
+                listener.Start();
 
-                await Task.Run(() => HandleClientCommunication());
-            }
-            catch (Exception ex)
+                // Step 3: establish connection upon client request
+                while (true)
+                {
+                    DisplayMessage("Waiting for connection\r\n");
+
+                    // accept an incoming connection     
+                    connection = listener.AcceptSocket();
+
+                    // create NetworkStream object associated with socket
+                    socketStream = new NetworkStream(connection);
+
+                    // create objects for transferring data across stream
+                    writer = new BinaryWriter(socketStream);
+                    reader = new BinaryReader(socketStream);
+
+                    DisplayMessage("Connection " + counter + " received.\r\n");
+
+                    // inform client that connection was successfull  
+                    writer.Write("SERVER>>> Connection successful");
+
+                    string theReply = "";
+
+                    // Step 4: read string data sent from client
+                    do
+                    {
+                        try
+                        {
+                            // read the string sent to the server
+                            theReply = reader.ReadString();
+
+                            // display the message
+                            DisplayMessage("\r\n" + theReply);
+                        } // end try
+                        catch (Exception)
+                        {
+                            // handle exception if error reading data
+                            break;
+                        } // end catch
+                    } while (theReply != "CLIENT>>> TERMINATE" &&
+                       connection.Connected);
+
+                    DisplayMessage("\r\nUser terminated connection\r\n");
+
+                    writer?.Close();
+                    reader?.Close();
+                    socketStream?.Close();
+                    connection?.Close();
+
+                    counter++;
+                } // end while
+            } // end try
+            catch (Exception error)
             {
-                LogBox.Text += "Грешка: " + ex.Message + "\n";
-            }
+                MessageBox.Show(error.ToString());
+            } // end catch
         }
 
+        private void DisplayMessage(string message)
+        {
+            if (!LogBox.Dispatcher.CheckAccess())
+            {
+                LogBox.Dispatcher.Invoke(new Action(() => LogBox.Text += message));
+            }
+            else
+            {
+                LogBox.Text += message;
+            }
+        }
 
         private string TokenizeCard(string cardNumber)
         {
@@ -107,31 +182,5 @@ namespace BankTokenServer
                 LogBox.Text += "Грешка: " + ex.Message + "\n";
             }
         }
-
-
-        //private void HandleClientCommunication()
-        //{
-        //    try
-        //    {
-        //        NetworkStream networkStream = clientSocket.GetStream();
-        //        byte[] bytesFrom = new byte[10025];
-        //        int bytesRead = networkStream.Read(bytesFrom, 0, clientSocket.ReceiveBufferSize);
-        //        string dataFromClient = Encoding.ASCII.GetString(bytesFrom, 0, bytesRead);
-        //        LogBox.Text += "Съобщение от клиента: " + dataFromClient + "\n";
-
-        //        string serverResponse = "Сървърът е получил съобщението.";
-        //        byte[] sendBytes = Encoding.ASCII.GetBytes(serverResponse);
-        //        networkStream.Write(sendBytes, 0, sendBytes.Length);
-        //        networkStream.Flush();
-
-        //        clientSocket.Close();
-        //        serverSocket.Stop();
-        //        LogBox.Text += "Изход от сървъра.\n";
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        LogBox.Text += "Грешка: " + ex.Message + "\n";
-        //    }
-        //}
     }
 }

@@ -3,7 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Server" Height="350" Width="525">
     <Grid>
-        <Button Content="Start Server" HorizontalAlignment="Left" Margin="50,41,0,0" VerticalAlignment="Top" Width="68" Click="StartServer_Click" Height="43"/>
         <TextBox x:Name="LogBox" HorizontalAlignment="Left" Height="154" Margin="50,116,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="404" IsReadOnly="True"/>
     </Grid>
 </Window>
