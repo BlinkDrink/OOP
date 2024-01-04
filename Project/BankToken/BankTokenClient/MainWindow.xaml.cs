@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.ComponentModel;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Windows;
@@ -7,18 +8,73 @@ namespace BankTokenClient
 {
     public partial class MainWindow : Window
     {
+        int port = 55000;
         private NetworkStream? output; // stream for receiving data           
         private BinaryWriter? writer; // facilitates writing to the stream    
         private BinaryReader? reader; // facilitates reading from the stream  
-        private readonly Thread readThread; // Thread for processing incoming messages
+        private Thread readThread; // Thread for processing incoming messages
         private TcpClient clientSocket;
 
         public MainWindow()
         {
             InitializeComponent();
+            InitializeClient();
+        }
+
+        private async void InitializeClient()
+        {
             inputTextBox.Visibility = Visibility.Hidden;
             getButton.Visibility = Visibility.Hidden;
             registerButton.Visibility = Visibility.Hidden;
+
+            try
+            {
+                await RunClient();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString(), "Connection Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                Environment.Exit(Environment.ExitCode);
+            }
+        }
+
+        private void Window_Closing(object sender, CancelEventArgs e)
+        {
+            try
+            {
+                // Inform the server about the disconnection
+                writer?.Write("EXIT");
+
+                // Clean up resources
+                writer.Close();
+                reader?.Close();
+                output?.Close();
+                clientSocket.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error on exit: " + ex.Message);
+            }
+
+            System.Environment.Exit(System.Environment.ExitCode);
+        }
+
+        public async Task RunClient()
+        {
+            try
+            {
+                clientSocket = new TcpClient();
+                IPAddress local = IPAddress.Parse("127.0.0.1");
+                await clientSocket.ConnectAsync(local, port);
+
+                output = clientSocket.GetStream();
+                writer = new BinaryWriter(output);
+                reader = new BinaryReader(output);
+            } // end try
+            catch (Exception error)
+            {
+                MessageBox.Show(error.ToString(), "Connection Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void LoginButton_Click(object sender, RoutedEventArgs e)
@@ -26,24 +82,15 @@ namespace BankTokenClient
             string username = UserNameTextBox.Text;
             string password = PasswordTextBox.Password;
 
-            TcpClient client = null;
             try
             {
-                IPAddress local = IPAddress.Parse("127.0.0.1");
-                client = new TcpClient();
-                client.Connect(local, 50000);
+                writer?.Write(username);
+                writer?.Write(password);
 
-                output = clientSocket.GetStream();
-                writer = new BinaryWriter(output);
-                reader = new BinaryReader(output);
-
-                writer.Write(username);
-                writer.Write(password);
-
-                string response = reader.ReadString();
+                bool? response = reader?.ReadBoolean();
 
                 // Process the response (e.g., show login success/failure)
-                if (response == "True")
+                if ((bool)response)
                 {
                     MessageBox.Show("Login successful!");
                     inputTextBox.Visibility = Visibility.Visible;
@@ -55,20 +102,19 @@ namespace BankTokenClient
                 {
                     MessageBox.Show("Invalid credentials. Please try again.");
                 }
-
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                MessageBox.Show("An error occurred: " + ex.Message);
+                MessageBox.Show(exception.Message);
             }
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void RegisterCardButton_Click(object sender, RoutedEventArgs e)
         {
 
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
+        private void GetCardButton_Click(object sender, RoutedEventArgs e)
         {
 
         }
