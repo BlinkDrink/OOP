@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.ComponentModel;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Windows;
@@ -16,20 +17,40 @@ namespace BankTokenServer
         private NetworkStream? stream;
         private BinaryWriter? writer;
         private BinaryReader? reader;
+        private XDocument userCredentials;
 
         public MainWindow()
         {
             InitializeComponent();
             connections = new List<TcpClient>();
+            userCredentials = XDocument.Load("users.xml");
             RunServer();
+        }
+
+        private void Window_Closing(object sender, CancelEventArgs e)
+        {
+            try
+            {
+                // Clean up resources
+                writer?.Close();
+                reader?.Close();
+
+                foreach (TcpClient client in connections)
+                {
+                    client.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error on exit: " + ex.Message);
+            }
+
+            System.Environment.Exit(System.Environment.ExitCode);
         }
 
         private async void RunServer()
         {
             int counter = 1;
-
-            // wait for a client connection and display the text
-            // that the client sends
             try
             {
                 IPAddress local = IPAddress.Parse("127.0.0.1");
@@ -38,20 +59,13 @@ namespace BankTokenServer
 
                 DisplayMessage("Server started...\r\n");
 
-                // Step 3: establish connection upon client request
                 while (true)
                 {
                     DisplayMessage("Waiting for connection\r\n");
-
-                    // accept an incoming connection     
-                    //connection = listener.AcceptSocket();
                     TcpClient client = await listener.AcceptTcpClientAsync();
                     DisplayMessage("Connection " + counter + " received.\r\n");
                     connections.Add(client);
                     _ = HandleClient(client);
-
-                    //Thread clientThread = new Thread(() => HandleClient(connection));
-                    //clientThread.Start();
                     counter++;
                 }
             }
@@ -103,11 +117,11 @@ namespace BankTokenServer
             }
         }
 
-        private void DisplayMessage(string message)
+        private async void DisplayMessage(string message)
         {
             if (!LogBox.Dispatcher.CheckAccess())
             {
-                LogBox.Dispatcher.Invoke(new Action(() => LogBox.Text += message));
+                await LogBox.Dispatcher.InvokeAsync(new Action(() => LogBox.Text += message));
             }
             else
             {
@@ -117,11 +131,7 @@ namespace BankTokenServer
 
         public bool CheckCredentials(string username, string password)
         {
-            // Load XML file with user credentials
-            XDocument doc = XDocument.Load("users.xml");
-
-            // Search for the provided username and password in the XML
-            var user = doc.Descendants("User")
+            var user = userCredentials.Descendants("User")
                 .FirstOrDefault(u =>
                     u.Element("Username")?.Value == username &&
                     u.Element("Password")?.Value == password);
