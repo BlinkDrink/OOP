@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
-using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 using System.Windows;
 using System.Xml;
 using System.Xml.Linq;
@@ -10,35 +10,55 @@ namespace BankTokenServer
 {
     public partial class MainWindow : Window
     {
-        private Thread readThread;
         int port = 55000;
         TcpListener listener;
-        private List<TcpClient> connections;
         private NetworkStream? stream;
-        private BinaryWriter? writer;
-        private BinaryReader? reader;
         private XDocument userCredentials;
+        private XDocument tokenData;
 
         public MainWindow()
         {
             InitializeComponent();
-            connections = new List<TcpClient>();
-            userCredentials = XDocument.Load("users.xml");
-            RunServer();
+            InitializeServer();
         }
 
+        private void InitializeServer()
+        {
+            userCredentials = XDocument.Load("users.xml"); // Зареждане на файл с потребители
+            //tokenData = XDocument.Load("tokens.xml"); // Зареждане на файл със съответствия между номер на карта и токен
+
+            // Запускане на асинхронен метод за стартиране на сървъра
+            Task.Run(() => StartServer());
+        }
+
+        private async Task StartServer()
+        {
+            try
+            {
+                IPAddress localAddr = IPAddress.Parse("127.0.0.1");
+                listener = new TcpListener(localAddr, port);
+                listener.Start();
+
+                DisplayMessage("Server started...\r\n");
+
+                while (true)
+                {
+                    TcpClient client = await listener.AcceptTcpClientAsync();
+                    DisplayMessage("Client successfully connected");
+                    stream = client.GetStream();
+                    _ = HandleClient(client);
+                }
+            }
+            catch (Exception ex)
+            {
+                DisplayMessage($"Server error: {ex.Message}\r\n");
+            }
+        }
         private void Window_Closing(object sender, CancelEventArgs e)
         {
             try
             {
-                // Clean up resources
-                writer?.Close();
-                reader?.Close();
-
-                foreach (TcpClient client in connections)
-                {
-                    client.Close();
-                }
+                stream.Close();
             }
             catch (Exception ex)
             {
@@ -48,73 +68,101 @@ namespace BankTokenServer
             System.Environment.Exit(System.Environment.ExitCode);
         }
 
-        private async void RunServer()
-        {
-            int counter = 1;
-            try
-            {
-                IPAddress local = IPAddress.Parse("127.0.0.1");
-                listener = new TcpListener(local, port);
-                listener.Start();
-
-                DisplayMessage("Server started...\r\n");
-
-                while (true)
-                {
-                    DisplayMessage("Waiting for connection\r\n");
-                    TcpClient client = await listener.AcceptTcpClientAsync();
-                    DisplayMessage("Connection " + counter + " received.\r\n");
-                    connections.Add(client);
-                    _ = HandleClient(client);
-                    counter++;
-                }
-            }
-            catch (Exception error)
-            {
-                MessageBox.Show(error.ToString());
-            }
-        }
-
         public async Task HandleClient(TcpClient client)
         {
-            stream = client.GetStream();
-            reader = new BinaryReader(stream);
-            writer = new BinaryWriter(stream);
-            string username, password;
-            bool credentialsMatch;
             try
             {
-                do
+                using (NetworkStream stream = client.GetStream())
                 {
-                    username = reader.ReadString();
-                    password = reader.ReadString();
-                    credentialsMatch = CheckCredentials(username, password);
-                    writer.Write(credentialsMatch);
-                } while (!credentialsMatch);
+                    byte[] buffer = new byte[1024];
+                    int bytesRead;
 
-                string clientMessage;
-                do
-                {
-                    clientMessage = reader.ReadString();
+                    while ((bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length)) != 0)
+                    {
+                        string dataReceived = Encoding.UTF8.GetString(buffer, 0, bytesRead);
+                        string[] requestData = dataReceived.Split('|'); // Допустимо разделяне на заявките
 
-                } while (clientMessage != "EXIT");
+                        if (requestData.Length >= 2)
+                        {
+                            string command = requestData[0];
+                            string username = requestData[1];
+                            string password = requestData[2]; // Предполагайки, че имаме команда, потребителско име и парола
 
-                DisplayMessage("\r\nUser terminated connection\r\n");
-                await writer.DisposeAsync();
-                stream.Close();
-                client.Close();
+                            bool isAuthenticated = CheckCredentials(username, password);
+
+                            await SendToClient(isAuthenticated);
+
+                            if (isAuthenticated)
+                            {
+                                // Проверка на командата
+                                if (command == "REGISTER_TOKEN")
+                                {
+                                    string cardNumber = requestData[3]; // Вземане на номер на карта от заявката
+                                    bool isTokenRegistered = await RegisterToken(cardNumber); // Метод за регистрация на токена
+
+                                    // Изпращане на отговор към клиента
+                                    string response = isTokenRegistered ? "TOKEN_REGISTERED" : "TOKEN_REGISTRATION_FAILED";
+                                    byte[] responseBuffer = Encoding.UTF8.GetBytes(response);
+                                    await stream.WriteAsync(responseBuffer, 0, responseBuffer.Length);
+                                }
+                                else if (command == "GET_CARD_NUMBER")
+                                {
+                                    string token = requestData[3]; // Вземане на токен от заявката
+                                    string cardNumber = await GetCardNumber(token); // Метод за връщане на номер на карта
+
+                                    // Изпращане на отговор към клиента
+                                    byte[] responseBuffer = Encoding.UTF8.GetBytes(cardNumber);
+                                    await stream.WriteAsync(responseBuffer, 0, responseBuffer.Length);
+                                }
+                                else
+                                {
+                                    // Невалидна команда
+                                    byte[] responseBuffer = Encoding.UTF8.GetBytes("INVALID_COMMAND");
+                                    await stream.WriteAsync(responseBuffer, 0, responseBuffer.Length);
+                                }
+                            }
+                            else
+                            {
+                                MessageBox.Show("Invalid credentials, try again.", "Login error", MessageBoxButton.OK, MessageBoxImage.Error);
+                            }
+                        }
+                    }
+                }
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Exception: " + ex.Message);
+                DisplayMessage($"Client error: {ex.Message}\r\n");
             }
             finally
             {
-                writer.Close();
-                reader.Close();
-                stream.Close();
                 client.Close();
             }
+        }
+
+        private async Task SendToClient(bool isAuthenticated)
+        {
+            try
+            {
+                string message = isAuthenticated ? "AUTHENTICATED" : "INVALID_CREDENTIALS";
+                byte[] buffer = Encoding.UTF8.GetBytes(message);
+                await stream.WriteAsync(buffer, 0, buffer.Length);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error sending data to client: {ex.Message}");
+            }
+        }
+
+        private async Task<bool> RegisterToken(string cardNumber)
+        {
+            // TODO: Логика за регистрация на токена (токенизация, валидация и запис в XML)
+            return true; // Примерен отговор
+        }
+
+        private async Task<string> GetCardNumber(string token)
+        {
+            // TODO: Логика за връщане на номер на карта по токен (проверка в XML и връщане на стойност)
+            return "1234 5678 9012 3456"; // Примерен отговор
         }
 
         private async void DisplayMessage(string message)
