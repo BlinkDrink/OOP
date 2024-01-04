@@ -1,45 +1,76 @@
-﻿using System.Net.Sockets;
-using System.Text;
+﻿using System.IO;
+using System.Net;
+using System.Net.Sockets;
 using System.Windows;
 
 namespace BankTokenClient
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
+        private NetworkStream? output; // stream for receiving data           
+        private BinaryWriter? writer; // facilitates writing to the stream    
+        private BinaryReader? reader; // facilitates reading from the stream  
+        private readonly Thread readThread; // Thread for processing incoming messages
         private TcpClient clientSocket;
 
         public MainWindow()
         {
             InitializeComponent();
+            inputTextBox.Visibility = Visibility.Hidden;
+            getButton.Visibility = Visibility.Hidden;
+            registerButton.Visibility = Visibility.Hidden;
         }
 
-        private void SendMessage_Click(object sender, RoutedEventArgs e)
+        private void LoginButton_Click(object sender, RoutedEventArgs e)
         {
+            string username = UserNameTextBox.Text;
+            string password = PasswordTextBox.Password;
+
+            TcpClient client = null;
             try
             {
-                clientSocket = new TcpClient();
-                clientSocket.Connect("127.0.0.1", 8888);
+                IPAddress local = IPAddress.Parse("127.0.0.1");
+                client = new TcpClient();
+                client.Connect(local, 50000);
 
-                string message = MessageTextBox.Text;
-                NetworkStream networkStream = clientSocket.GetStream();
-                byte[] sendBytes = Encoding.ASCII.GetBytes(message);
-                networkStream.Write(sendBytes, 0, sendBytes.Length);
-                networkStream.Flush();
+                output = clientSocket.GetStream();
+                writer = new BinaryWriter(output);
+                reader = new BinaryReader(output);
 
-                byte[] bytesFrom = new byte[10025];
-                networkStream.Read(bytesFrom, 0, (int)clientSocket.ReceiveBufferSize);
-                string dataFromServer = Encoding.ASCII.GetString(bytesFrom);
-                LogBox.Text += "Отговор от сървъра: " + dataFromServer + "\n";
+                writer.Write(username);
+                writer.Write(password);
 
-                clientSocket.Close();
+                string response = reader.ReadString();
+
+                // Process the response (e.g., show login success/failure)
+                if (response == "True")
+                {
+                    MessageBox.Show("Login successful!");
+                    inputTextBox.Visibility = Visibility.Visible;
+                    getButton.Visibility = Visibility.Visible;
+                    registerButton.Visibility = Visibility.Visible;
+                    loginGrid.Visibility = Visibility.Hidden;
+                }
+                else
+                {
+                    MessageBox.Show("Invalid credentials. Please try again.");
+                }
+
             }
             catch (Exception ex)
             {
-                LogBox.Text += "Грешка: " + ex.Message + "\n";
+                MessageBox.Show("An error occurred: " + ex.Message);
             }
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

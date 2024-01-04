@@ -1,9 +1,9 @@
 ﻿using System.IO;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using System.Windows;
 using System.Xml;
+using System.Xml.Linq;
 
 namespace BankTokenServer
 {
@@ -11,14 +11,11 @@ namespace BankTokenServer
     {
         private Thread readThread;
 
-        private Socket? connection;
-        private NetworkStream? socketStream;
+        TcpListener listener;
+        private TcpClient? connection;
+        private NetworkStream? stream;
         private BinaryWriter? writer;
         private BinaryReader? reader;
-
-        //private TcpListener connection;
-        //private TcpClient clientSocket;
-        //private NetworkStream networkStream;
 
         public MainWindow()
         {
@@ -29,7 +26,6 @@ namespace BankTokenServer
 
         private async void RunServer()
         {
-            TcpListener listener;
             int counter = 1;
 
             // wait for a client connection and display the text
@@ -49,55 +45,50 @@ namespace BankTokenServer
                     DisplayMessage("Waiting for connection\r\n");
 
                     // accept an incoming connection     
-                    connection = listener.AcceptSocket();
-
-                    // create NetworkStream object associated with socket
-                    socketStream = new NetworkStream(connection);
-
-                    // create objects for transferring data across stream
-                    writer = new BinaryWriter(socketStream);
-                    reader = new BinaryReader(socketStream);
+                    //connection = listener.AcceptSocket();
+                    connection = listener.AcceptTcpClient();
 
                     DisplayMessage("Connection " + counter + " received.\r\n");
 
-                    // inform client that connection was successfull  
-                    writer.Write("SERVER>>> Connection successful");
-
-                    string theReply = "";
-
-                    // Step 4: read string data sent from client
-                    do
-                    {
-                        try
-                        {
-                            // read the string sent to the server
-                            theReply = reader.ReadString();
-
-                            // display the message
-                            DisplayMessage("\r\n" + theReply);
-                        } // end try
-                        catch (Exception)
-                        {
-                            // handle exception if error reading data
-                            break;
-                        } // end catch
-                    } while (theReply != "CLIENT>>> TERMINATE" &&
-                       connection.Connected);
+                    Thread clientThread = new Thread(() => HandleClient(connection));
+                    clientThread.Start();
 
                     DisplayMessage("\r\nUser terminated connection\r\n");
-
-                    writer?.Close();
-                    reader?.Close();
-                    socketStream?.Close();
                     connection?.Close();
-
                     counter++;
-                } // end while
-            } // end try
+                }
+            }
             catch (Exception error)
             {
                 MessageBox.Show(error.ToString());
-            } // end catch
+            }
+        }
+
+        public void HandleClient(TcpClient client)
+        {
+            stream = client.GetStream();
+            reader = new BinaryReader(stream);
+            writer = new BinaryWriter(stream);
+
+            try
+            {
+                string username = reader.ReadString();
+                string password = reader.ReadString();
+
+                // Check username and password against XML data
+                bool credentialsMatch = CheckCredentials(username, password);
+
+                // Send response back to client
+                writer.Write(credentialsMatch);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Exception: " + ex.Message);
+            }
+            finally
+            {
+                client.Close();
+            }
         }
 
         private void DisplayMessage(string message)
@@ -110,6 +101,20 @@ namespace BankTokenServer
             {
                 LogBox.Text += message;
             }
+        }
+
+        public bool CheckCredentials(string username, string password)
+        {
+            // Load XML file with user credentials
+            XDocument doc = XDocument.Load("Users.xml");
+
+            // Search for the provided username and password in the XML
+            var user = doc.Descendants("User")
+                .FirstOrDefault(u =>
+                    u.Element("Username")?.Value == username &&
+                    u.Element("Password")?.Value == password);
+
+            return user != null;
         }
 
         private string TokenizeCard(string cardNumber)
@@ -140,47 +145,6 @@ namespace BankTokenServer
             tokenElement.AppendChild(cardNumberElement);
 
             doc.Save("tokens.xml"); // Запазване на обновения XML файл
-        }
-
-        private void HandleClientCommunication()
-        {
-            try
-            {
-                string message = dataFromClient.Trim(); // Полученото съобщение от клиента
-
-                if (message.StartsWith("REGISTER_TOKEN")) // Ако съобщението е за регистрация на токен
-                {
-                    string[] parts = message.Split('|'); // Формат: REGISTER_TOKEN|cardNumber
-                    if (parts.Length == 2)
-                    {
-                        string cardNumber = parts[1];
-
-                        // Проверки за валидност на номера на кредитната карта и други валидации
-
-                        // Токенизация
-                        string token = TokenizeCard(cardNumber);
-
-                        // Запазване на токена и номера на картата в XML
-                        SaveTokenToXML(cardNumber, token);
-
-                        // Отговор до клиента
-                        string serverResponse = "Токенът е регистриран успешно: " + token;
-                        byte[] sendBytes = Encoding.ASCII.GetBytes(serverResponse);
-                        networkStream.Write(sendBytes, 0, sendBytes.Length);
-                        networkStream.Flush();
-                    }
-                }
-                else if (message.StartsWith("GET_CARD_NUMBER")) // Ако съобщението е за извличане на номер на карта по токен
-                {
-                    // Логика за извличане на номера на картата по токен и изпращане към клиента
-                }
-
-                // ... (останала логика)
-            }
-            catch (Exception ex)
-            {
-                LogBox.Text += "Грешка: " + ex.Message + "\n";
-            }
         }
     }
 }
