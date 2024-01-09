@@ -95,6 +95,7 @@ namespace BankTokenClient
             }
         }
 
+        #region rip
         //int port = 55000;
         //private NetworkStream? output; // stream for receiving data           
         //private BinaryWriter? writer; // facilitates writing to the stream    
@@ -196,6 +197,7 @@ namespace BankTokenClient
         //    }
         //}
 
+        #endregion
         private void RegisterCardButton_Click(object sender, RoutedEventArgs e)
         {
 

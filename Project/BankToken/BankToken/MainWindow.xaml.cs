@@ -26,8 +26,6 @@ namespace BankTokenServer
         {
             userCredentials = XDocument.Load("users.xml"); // Зареждане на файл с потребители
             //tokenData = XDocument.Load("tokens.xml"); // Зареждане на файл със съответствия между номер на карта и токен
-
-            // Запускане на асинхронен метод за стартиране на сървъра
             Task.Run(() => StartServer());
         }
 
@@ -157,6 +155,11 @@ namespace BankTokenServer
 
         private async Task<bool> RegisterToken(string cardNumber)
         {
+            if (!ValidateCreditCardNumber(cardNumber))
+                return false;
+
+            SaveTokenToXML(cardNumber, TokenizeCard(cardNumber));
+
             return true;
         }
 
@@ -191,18 +194,70 @@ namespace BankTokenServer
         {
             // Генериране на токен
             Random rand = new Random();
-            string token = rand.Next(1000, 9999).ToString(); // Генериране на първите 4 цифри на токена
-            token += cardNumber.Substring(4, 12); // Добавяне на следващите 12 цифри от номера на картата
+            string token = String.Empty;
+            int digitSum = 0;
+
+            while (digitSum % 10 == 0)
+            {
+                StringBuilder tokenAttempt = new StringBuilder(cardNumber);
+
+                // Generating the first number of the token
+                HashSet<int> forbiddenNums = new HashSet<int>() { 3, 4, 5, 6 };
+                int firstDigit = rand.Next(0, 10);
+                while (forbiddenNums.Contains(firstDigit))
+                    firstDigit = rand.Next(0, 10);
+
+                tokenAttempt[0] = char.Parse(firstDigit.ToString());
+
+                // Generating the next 11 numbers
+                for (int i = 1; i < 12; i++)
+                {
+                    int newDigit = rand.Next(0, 10);
+
+                    while (newDigit == int.Parse(tokenAttempt[i].ToString()))
+                    {
+                        newDigit = rand.Next(0, 10);
+                    }
+
+                    tokenAttempt[i] = char.Parse(newDigit.ToString());
+                }
+
+                digitSum = tokenAttempt.ToString().Sum(c => c - '0');
+                token = tokenAttempt.ToString();
+            }
+
             return token;
+        }
+
+        public static bool ValidateCreditCardNumber(string creditCardNumber)
+        {
+            int sum = 0;
+            bool alternate = true;
+
+            for (int i = creditCardNumber.Length - 1; i >= 0; i--)
+            {
+                int digit = creditCardNumber[i] - '0';
+
+                if (alternate)
+                {
+                    digit *= 2;
+
+                    if (digit > 9)
+                    {
+                        digit -= 9;
+                    }
+                }
+                sum += digit;
+                alternate = !alternate;
+            }
+
+            return sum % 10 == 0;
         }
 
         private void SaveTokenToXML(string cardNumber, string token)
         {
-            // Запазване на съответствието между токен и номер на картата в XML
-            // Примерно използване на System.Xml:
-            // Създаване на XML документ и добавяне на елементи за токена и номера на картата
             XmlDocument doc = new XmlDocument();
-            doc.Load("tokens.xml"); // Зареждане на съществуващия XML файл
+            doc.Load("tokens.xml");
             XmlElement root = doc.DocumentElement;
 
             XmlElement tokenElement = doc.CreateElement("Token");
@@ -214,7 +269,7 @@ namespace BankTokenServer
             root.AppendChild(tokenElement);
             tokenElement.AppendChild(cardNumberElement);
 
-            doc.Save("tokens.xml"); // Запазване на обновения XML файл
+            doc.Save("tokens.xml");
         }
     }
 }
