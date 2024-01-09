@@ -7,8 +7,6 @@ namespace BankTokenClient
 {
     public partial class MainWindow : Window
     {
-        // Други член-променливи и методи на MainWindow...
-
         private TcpClient client;
         private NetworkStream stream;
         private const int port = 55000;
@@ -78,8 +76,6 @@ namespace BankTokenClient
             }
         }
 
-        // Други методи на MainWindow...
-
         private async void LoginButton_Click(object sender, RoutedEventArgs e)
         {
             await SendData("USER_AUTHENTICATION|" + UserNameTextBox.Text + "|" + PasswordTextBox.Password);
@@ -96,7 +92,6 @@ namespace BankTokenClient
                 getButton.Visibility = Visibility.Visible;
                 registerButton.Visibility = Visibility.Visible;
                 loginGrid.Visibility = Visibility.Hidden;
-                MessageBox.Show("Authenticated. Ready to perform actions.\r\n");
             }
         }
 

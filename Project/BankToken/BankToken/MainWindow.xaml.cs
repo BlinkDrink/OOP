@@ -80,51 +80,53 @@ namespace BankTokenServer
                     while ((bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length)) != 0)
                     {
                         string dataReceived = Encoding.UTF8.GetString(buffer, 0, bytesRead);
-                        string[] requestData = dataReceived.Split('|'); // Допустимо разделяне на заявките
+                        string[] requestData = dataReceived.Split('|');
+                        bool isLoggedIn = false;
 
                         if (requestData.Length >= 2)
                         {
-                            string command = requestData[0];
-                            string username = requestData[1];
-                            string password = requestData[2]; // Предполагайки, че имаме команда, потребителско име и парола
-
-                            bool isAuthenticated = CheckCredentials(username, password);
-
-                            await SendToClient(isAuthenticated);
-
-                            if (isAuthenticated)
+                            if (!isLoggedIn)
                             {
-                                // Проверка на командата
+                                string command = requestData[0];
+                                string username = requestData[1];
+                                string password = requestData[2];
+
+                                isLoggedIn = CheckCredentials(username, password);
+
+                                await SendToClient(isLoggedIn);
+
+                                if (!isLoggedIn)
+                                {
+                                    MessageBox.Show("Invalid credentials, try again.", "Login error", MessageBoxButton.OK, MessageBoxImage.Error);
+                                }
+                            }
+                            else
+                            {
+                                string command = requestData[0];
                                 if (command == "REGISTER_TOKEN")
                                 {
-                                    string cardNumber = requestData[3]; // Вземане на номер на карта от заявката
-                                    bool isTokenRegistered = await RegisterToken(cardNumber); // Метод за регистрация на токена
+                                    string cardNumber = requestData[3];
+                                    bool isTokenRegistered = await RegisterToken(cardNumber);
 
-                                    // Изпращане на отговор към клиента
                                     string response = isTokenRegistered ? "TOKEN_REGISTERED" : "TOKEN_REGISTRATION_FAILED";
                                     byte[] responseBuffer = Encoding.UTF8.GetBytes(response);
                                     await stream.WriteAsync(responseBuffer, 0, responseBuffer.Length);
                                 }
                                 else if (command == "GET_CARD_NUMBER")
                                 {
-                                    string token = requestData[3]; // Вземане на токен от заявката
-                                    string cardNumber = await GetCardNumber(token); // Метод за връщане на номер на карта
+                                    string token = requestData[3];
+                                    string cardNumber = await GetCardNumber(token);
 
-                                    // Изпращане на отговор към клиента
                                     byte[] responseBuffer = Encoding.UTF8.GetBytes(cardNumber);
                                     await stream.WriteAsync(responseBuffer, 0, responseBuffer.Length);
                                 }
                                 else
                                 {
-                                    // Невалидна команда
                                     byte[] responseBuffer = Encoding.UTF8.GetBytes("INVALID_COMMAND");
                                     await stream.WriteAsync(responseBuffer, 0, responseBuffer.Length);
                                 }
                             }
-                            else
-                            {
-                                MessageBox.Show("Invalid credentials, try again.", "Login error", MessageBoxButton.OK, MessageBoxImage.Error);
-                            }
+
                         }
                     }
                 }
@@ -155,14 +157,12 @@ namespace BankTokenServer
 
         private async Task<bool> RegisterToken(string cardNumber)
         {
-            // TODO: Логика за регистрация на токена (токенизация, валидация и запис в XML)
-            return true; // Примерен отговор
+            return true;
         }
 
         private async Task<string> GetCardNumber(string token)
         {
-            // TODO: Логика за връщане на номер на карта по токен (проверка в XML и връщане на стойност)
-            return "1234 5678 9012 3456"; // Примерен отговор
+            return "1234 5678 9012 3456";
         }
 
         private async void DisplayMessage(string message)
