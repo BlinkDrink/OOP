@@ -7,6 +7,7 @@ namespace BankTokenClient
 {
     public partial class LoginForm : UserControl
     {
+        public event EventHandler<LoginEventArgs> LoginStatus;
         private TcpClient client;
         private NetworkStream stream;
         private const int port = 55000;
@@ -17,6 +18,12 @@ namespace BankTokenClient
             client = new TcpClient();
             Task.Run(() => ConnectToServer());
         }
+
+        protected virtual void OnLogin(LoginEventArgs e)
+        {
+            LoginStatus?.Invoke(this, e);
+        }
+
 
         private async Task ConnectToServer()
         {
@@ -71,6 +78,11 @@ namespace BankTokenClient
             else
             {
                 MessageBox.Show("Login successful!");
+                if (LoginStatus != null)
+                {
+                    LoginEventArgs loginEventArgs = new LoginEventArgs(client, stream);
+                    OnLogin(loginEventArgs);
+                }
             }
         }
     }
