@@ -11,7 +11,6 @@ namespace BankTokenClient
         private NetworkStream _stream;
         private TcpClient _client;
         private string _creditCardNumber;
-        private bool _isValidCreditCard;
 
         public event PropertyChangedEventHandler? PropertyChanged;
         public static readonly DependencyProperty IsValidBankCardProperty =
@@ -81,6 +80,9 @@ namespace BankTokenClient
         {
             int sum = 0;
             bool alternate = false;
+
+            if (creditCardNumber.Length != 16)
+                return false;
 
             for (int i = creditCardNumber.Length - 1; i >= 0; i--)
             {
