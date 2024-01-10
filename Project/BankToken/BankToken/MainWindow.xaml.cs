@@ -3,7 +3,6 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Windows;
-using System.Xml;
 using System.Xml.Linq;
 
 namespace BankTokenServer
@@ -14,8 +13,8 @@ namespace BankTokenServer
         int port = 55000;
         TcpListener listener;
         private NetworkStream? stream;
-        private XDocument userCredentials;
-        private XDocument tokenData;
+        private XDocument usersDB;
+        private XDocument tokensDB;
 
         public MainWindow()
         {
@@ -25,8 +24,8 @@ namespace BankTokenServer
 
         private void InitializeServer()
         {
-            userCredentials = XDocument.Load("users.xml"); // Зареждане на файл с потребители
-            //tokenData = XDocument.Load("tokens.xml"); // Зареждане на файл със съответствия между номер на карта и токен
+            usersDB = XDocument.Load("users.xml"); // Зареждане на файл с потребители
+            tokensDB = XDocument.Load("tokens.xml"); // Зареждане на файл със съответствия между номер на карта и токен
             Task.Run(() => StartServer());
         }
 
@@ -69,6 +68,7 @@ namespace BankTokenServer
 
         public async Task HandleClient(TcpClient client)
         {
+            bool isLoggedIn = false;
             try
             {
                 using (NetworkStream stream = client.GetStream())
@@ -80,7 +80,6 @@ namespace BankTokenServer
                     {
                         string dataReceived = Encoding.UTF8.GetString(buffer, 0, bytesRead);
                         string[] requestData = dataReceived.Split('|');
-                        bool isLoggedIn = false;
 
                         if (requestData.Length >= 2)
                         {
@@ -104,7 +103,7 @@ namespace BankTokenServer
                                 string command = requestData[0];
                                 if (command == "REGISTER_TOKEN")
                                 {
-                                    string cardNumber = requestData[3];
+                                    string cardNumber = requestData[1];
                                     bool isTokenRegistered = await RegisterToken(cardNumber);
 
                                     string response = isTokenRegistered ? "TOKEN_REGISTERED" : "TOKEN_REGISTRATION_FAILED";
@@ -156,9 +155,22 @@ namespace BankTokenServer
 
         private async Task<bool> RegisterToken(string cardNumber)
         {
-            SaveTokenToXML(cardNumber, TokenizeCard(cardNumber));
+            bool isTokenRegistered = IsCardRegistered(cardNumber);
 
-            return true;
+            if (!isTokenRegistered)
+            {
+                string token = TokenizeCard(cardNumber);
+                SaveTokenToXML(cardNumber, token);
+            }
+
+            return !isTokenRegistered;
+        }
+
+        private bool IsCardRegistered(string cardNumber)
+        {
+            var existingCard = tokensDB.Descendants("Token")
+                                        .FirstOrDefault(t => t.Element("CardNumber")?.Value == cardNumber);
+            return existingCard != null;
         }
 
         private async Task<string> GetCardNumber(string token)
@@ -180,7 +192,7 @@ namespace BankTokenServer
 
         public bool CheckCredentials(string username, string password)
         {
-            var user = userCredentials.Descendants("User")
+            var user = usersDB.Descendants("User")
                 .FirstOrDefault(u =>
                     u.Element("Username")?.Value == username &&
                     u.Element("Password")?.Value == password);
@@ -190,7 +202,6 @@ namespace BankTokenServer
 
         private string TokenizeCard(string cardNumber)
         {
-            // Генериране на токен
             Random rand = new Random();
             string token = String.Empty;
             int digitSum = 0;
@@ -229,20 +240,13 @@ namespace BankTokenServer
 
         private void SaveTokenToXML(string cardNumber, string token)
         {
-            XmlDocument doc = new XmlDocument();
-            doc.Load("tokens.xml");
-            XmlElement root = doc.DocumentElement;
+            XElement newToken = new XElement("Token",
+                                    new XElement("CardNumber", cardNumber),
+                                    new XElement("TokenValue", token));
 
-            XmlElement tokenElement = doc.CreateElement("Token");
-            XmlElement cardNumberElement = doc.CreateElement("CardNumber");
+            tokensDB.Element("Tokens")?.Add(newToken);
 
-            tokenElement.InnerText = token;
-            cardNumberElement.InnerText = cardNumber;
-
-            root.AppendChild(tokenElement);
-            tokenElement.AppendChild(cardNumberElement);
-
-            doc.Save("tokens.xml");
+            tokensDB.Save("tokens.xml");
         }
     }
 }

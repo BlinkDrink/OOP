@@ -15,6 +15,8 @@ namespace BankTokenClient
         public event PropertyChangedEventHandler? PropertyChanged;
         public static readonly DependencyProperty IsValidBankCardProperty =
             DependencyProperty.Register("IsValidBankCard", typeof(bool), typeof(MainWindow), new PropertyMetadata(false));
+        public static readonly DependencyProperty IsCardRegisteredProperty =
+            DependencyProperty.Register("IsCardRegistered", typeof(bool), typeof(MainWindow), new PropertyMetadata(false));
 
         public string CreditCardNumber
         {
@@ -33,10 +35,17 @@ namespace BankTokenClient
             set { SetValue(IsValidBankCardProperty, value); }
         }
 
+        public bool IsCardRegistered
+        {
+            get { return (bool)GetValue(IsCardRegisteredProperty); }
+            set { SetValue(IsCardRegisteredProperty, value); }
+        }
+
         public MainWindow()
         {
             InitializeComponent();
-            messageLabel.Visibility = Visibility.Hidden;
+            inputMessageLabel.Visibility = Visibility.Hidden;
+            registerMessageLabel.Visibility = Visibility.Hidden;
             inputTextBox.Visibility = Visibility.Hidden;
             getButton.Visibility = Visibility.Hidden;
             registerButton.Visibility = Visibility.Hidden;
@@ -71,7 +80,7 @@ namespace BankTokenClient
             _stream = e.Stream;
             loginForm.Visibility = Visibility.Hidden;
             inputTextBox.Visibility = Visibility.Visible;
-            messageLabel.Visibility = Visibility.Visible;
+            inputMessageLabel.Visibility = Visibility.Visible;
             getButton.Visibility = Visibility.Visible;
             registerButton.Visibility = Visibility.Visible;
         }
@@ -132,23 +141,68 @@ namespace BankTokenClient
             }
         }
 
-        private void RegisterCardButton_Click(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Handles registration of card number and retrieval of token based on that card number
+        /// Validation checks are made thorugh Depenedency Property
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private async void RegisterCardButton_Click(object sender, RoutedEventArgs e)
         {
             string cardNumber = inputTextBox.Text;
 
-            if (IsCreditCardValid(cardNumber))
+            try
             {
-                IsValidBankCard = true; // Промяна на стойността на Dependency property
+                if (_client != null && _client.Connected)
+                {
+                    //using (NetworkStream stream = _client.GetStream())
+                    //{
+                    string requestData = $"REGISTER_TOKEN|{cardNumber}";
+                    byte[] buffer = Encoding.UTF8.GetBytes(requestData);
+
+                    await _stream.WriteAsync(buffer, 0, buffer.Length);
+
+                    byte[] responseBuffer = new byte[1024];
+                    int bytesRead = await _stream.ReadAsync(responseBuffer, 0, responseBuffer.Length);
+                    string responseData = Encoding.UTF8.GetString(responseBuffer, 0, bytesRead);
+
+                    if (responseData == "TOKEN_REGISTERED")
+                    {
+                        IsCardRegistered = true;
+                        registerMessageLabel.Content = "Card was successfully registered";
+                        registerMessageLabel.Visibility = Visibility.Visible;
+                    }
+                    else if (responseData == "TOKEN_REGISTRATION_FAILED")
+                    {
+                        IsCardRegistered = false;
+                        registerMessageLabel.Content = "The card is already registered";
+                        registerMessageLabel.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        MessageBox.Show("Unexpected response from the server.");
+                    }
+                    //}
+                }
+                else
+                {
+                    MessageBox.Show("Not connected to the server.");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                IsValidBankCard = false; // Промяна на стойността на Dependency property
+                MessageBox.Show($"Error: {ex.Message}");
             }
         }
 
         private void GetCardButton_Click(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void InputTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            registerMessageLabel.Visibility = Visibility.Hidden;
         }
     }
 }

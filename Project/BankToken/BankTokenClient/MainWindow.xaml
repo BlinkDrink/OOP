@@ -9,8 +9,8 @@
     <Grid Margin="0,0,0,11">
         <local:LoginForm x:Name="loginForm" Margin="87,55,87,-82"/>
 
-        <TextBox x:Name="inputTextBox" HorizontalAlignment="Left" Margin="64,124,0,0" TextWrapping="Wrap" Text="{Binding CreditCardNumber, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="434" Height="72" FontSize="20" />
-        <Button x:Name="getButton" Content="Get card by Token" HorizontalAlignment="Left" Margin="520,126,0,0" VerticalAlignment="Top" Height="70" Width="148" RenderTransformOrigin="0.5,0.5" Click="GetCardButton_Click">
+        <TextBox x:Name="inputTextBox" HorizontalAlignment="Left" Margin="64,124,0,0" TextWrapping="Wrap" Text="{Binding CreditCardNumber, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="434" Height="72" FontSize="20" TextChanged="InputTextBox_TextChanged"/>
+        <Button x:Name="getButton" Content="Get card by Token" HorizontalAlignment="Left" Margin="520,126,0,0" VerticalAlignment="Top" Height="70" Width="172" RenderTransformOrigin="0.5,0.5" Click="GetCardButton_Click">
             <Button.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
@@ -20,13 +20,25 @@
                 </TransformGroup>
             </Button.RenderTransform>
         </Button>
-        <Button x:Name="registerButton" IsEnabled="{Binding IsValidBankCard}" Content="Register token by card" HorizontalAlignment="Left" Margin="702,126,0,0" VerticalAlignment="Top" Height="68" Width="148" Click="RegisterCardButton_Click"/>
-        <Label x:Name="messageLabel" Content="{Binding IsValidBankCard, Converter={StaticResource BooleanToMessageConverter}}" FontSize="20" HorizontalAlignment="Left" Margin="64,201,0,0" VerticalAlignment="Top" Height="43" Width="434">
+        <Button x:Name="registerButton" IsEnabled="{Binding IsValidBankCard}" Content="Register token by card" HorizontalAlignment="Left" Margin="746,126,0,0" VerticalAlignment="Top" Height="68" Width="172" Click="RegisterCardButton_Click"/>
+        <Label x:Name="inputMessageLabel" Content="{Binding IsValidBankCard, Converter={StaticResource BooleanToMessageConverter}}" FontSize="15" HorizontalAlignment="Left" Margin="64,201,0,0" VerticalAlignment="Top" Height="43" Width="434">
             <Label.Style>
                 <Style TargetType="Label">
                     <Setter Property="Foreground" Value="Red" />
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding IsValidBankCard}" Value="True">
+                            <Setter Property="Foreground" Value="Green" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Label.Style>
+        </Label>
+        <Label x:Name="registerMessageLabel"  Content="" HorizontalAlignment="Left" Margin="746,199,0,0" VerticalAlignment="Top" FontSize="10"  Height="45" Width="169">
+            <Label.Style>
+                <Style TargetType="Label">
+                    <Setter Property="Foreground" Value="Red" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsCardRegistered}" Value="True">
                             <Setter Property="Foreground" Value="Green" />
                         </DataTrigger>
                     </Style.Triggers>
