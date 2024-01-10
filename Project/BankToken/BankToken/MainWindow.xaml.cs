@@ -10,6 +10,7 @@ namespace BankTokenServer
 {
     public partial class MainWindow : Window
     {
+
         int port = 55000;
         TcpListener listener;
         private NetworkStream? stream;
@@ -155,9 +156,6 @@ namespace BankTokenServer
 
         private async Task<bool> RegisterToken(string cardNumber)
         {
-            if (!ValidateCreditCardNumber(cardNumber))
-                return false;
-
             SaveTokenToXML(cardNumber, TokenizeCard(cardNumber));
 
             return true;
@@ -227,31 +225,6 @@ namespace BankTokenServer
             }
 
             return token;
-        }
-
-        public static bool ValidateCreditCardNumber(string creditCardNumber)
-        {
-            int sum = 0;
-            bool alternate = true;
-
-            for (int i = creditCardNumber.Length - 1; i >= 0; i--)
-            {
-                int digit = creditCardNumber[i] - '0';
-
-                if (alternate)
-                {
-                    digit *= 2;
-
-                    if (digit > 9)
-                    {
-                        digit -= 9;
-                    }
-                }
-                sum += digit;
-                alternate = !alternate;
-            }
-
-            return sum % 10 == 0;
         }
 
         private void SaveTokenToXML(string cardNumber, string token)

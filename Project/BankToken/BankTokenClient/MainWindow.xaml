@@ -3,25 +3,14 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:BankTokenClient"
         Title="Client" Height="611" Width="1005" Closing="Window_Closing">
-    <Grid Margin="0,0,10,11">
-        <Grid x:Name="loginGrid" Margin="230,121,-143,190">
-            <StackPanel VerticalAlignment="Top" Margin="-1,60,376,0" Height="173">
-                <TextBlock Text="Login" FontSize="24" HorizontalAlignment="Center" Margin="0,0,0,20"/>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="Username:" VerticalAlignment="Center" Width="80"/>
-                    <TextBox x:Name="UserNameTextBox" Width="434" Height="30" />
-                </StackPanel>
+    <Window.Resources>
+        <local:BooleanToMessageConverter x:Key="BooleanToMessageConverter" />
+    </Window.Resources>
+    <Grid Margin="0,0,0,11">
+        <local:LoginForm x:Name="loginForm" Margin="87,55,87,-82"/>
 
-                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                    <TextBlock Text="Password:" VerticalAlignment="Center" Width="80"/>
-                    <PasswordBox x:Name="PasswordTextBox" Width="434" Height="30" VerticalAlignment="Center"/>
-                </StackPanel>
-
-                <Button Content="Login" Width="100" Height="30" Click="LoginButton_Click" HorizontalAlignment="Center"/>
-            </StackPanel>
-        </Grid>
-        <TextBox x:Name="inputTextBox"  HorizontalAlignment="Left" Margin="64,49,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="434" Height="72" FontSize="20"/>
-        <Button x:Name="getButton" Content="Get card by Token" HorizontalAlignment="Left" Margin="521,49,0,0" VerticalAlignment="Top" Height="69" Width="148" RenderTransformOrigin="0.5,0.5" Click="GetCardButton_Click">
+        <TextBox x:Name="inputTextBox" HorizontalAlignment="Left" Margin="64,124,0,0" TextWrapping="Wrap" Text="{Binding CreditCardNumber, UpdateSourceTrigger=PropertyChanged}" TextChanged="InputTextBox_TextChanged"  VerticalAlignment="Top" Width="434" Height="72" FontSize="20" />
+        <Button x:Name="getButton" Content="Get card by Token" HorizontalAlignment="Left" Margin="520,126,0,0" VerticalAlignment="Top" Height="70" Width="148" RenderTransformOrigin="0.5,0.5" Click="GetCardButton_Click">
             <Button.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
@@ -31,6 +20,18 @@
                 </TransformGroup>
             </Button.RenderTransform>
         </Button>
-        <Button x:Name="registerButton" Content="Register token by card" HorizontalAlignment="Left" Margin="699,49,0,0" VerticalAlignment="Top" Height="67" Width="162" Click="RegisterCardButton_Click"/>
+        <Button x:Name="registerButton" IsEnabled="{Binding IsValidBankCard}" Content="Register token by card" HorizontalAlignment="Left" Margin="702,126,0,0" VerticalAlignment="Top" Height="68" Width="148" Click="RegisterCardButton_Click"/>
+        <Label x:Name="messageLabel" Content="{Binding IsValidBankCard, Converter={StaticResource BooleanToMessageConverter}}" FontSize="20" HorizontalAlignment="Left" Margin="64,201,0,0" VerticalAlignment="Top" Height="28" Width="434">
+            <Label.Style>
+                <Style TargetType="Label">
+                    <Setter Property="Foreground" Value="Green" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsValidBankCard}" Value="False">
+                            <Setter Property="Foreground" Value="Red" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Label.Style>
+        </Label>
     </Grid>
 </Window>

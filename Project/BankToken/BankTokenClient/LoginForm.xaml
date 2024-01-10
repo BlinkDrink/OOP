@@ -13,12 +13,12 @@
                 <TextBlock Text="Login" FontSize="24" HorizontalAlignment="Center" Margin="0,0,0,20"/>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="Username:" VerticalAlignment="Center" Width="80"/>
-                    <TextBox x:Name="UserNameTextBox" Width="390" Height="30" />
+                    <TextBox x:Name="UserNameTextBox" Width="350" Height="30" />
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                     <TextBlock Text="Password:" VerticalAlignment="Center" Width="80"/>
-                    <PasswordBox x:Name="PasswordTextBox" Width="390" Height="30" VerticalAlignment="Center"/>
+                    <PasswordBox x:Name="PasswordTextBox" Width="350" Height="30" VerticalAlignment="Center"/>
                 </StackPanel>
 
                 <Button Content="Login" Width="100" Height="30" Click="LoginButton_Click" HorizontalAlignment="Center"/>
