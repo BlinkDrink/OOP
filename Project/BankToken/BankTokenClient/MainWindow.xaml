@@ -45,5 +45,6 @@
                 </Style>
             </Label.Style>
         </Label>
+        <TextBox x:Name="tokenTextBox"  HorizontalAlignment="Left" Margin="746,33,0,0" TextWrapping="Wrap" IsReadOnly="True"  Text="" VerticalAlignment="Top" Width="169" Height="70"/>
     </Grid>
 </Window>

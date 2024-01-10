@@ -155,8 +155,6 @@ namespace BankTokenClient
             {
                 if (_client != null && _client.Connected)
                 {
-                    //using (NetworkStream stream = _client.GetStream())
-                    //{
                     string requestData = $"REGISTER_TOKEN|{cardNumber}";
                     byte[] buffer = Encoding.UTF8.GetBytes(requestData);
 
@@ -166,13 +164,14 @@ namespace BankTokenClient
                     int bytesRead = await _stream.ReadAsync(responseBuffer, 0, responseBuffer.Length);
                     string responseData = Encoding.UTF8.GetString(responseBuffer, 0, bytesRead);
 
-                    if (responseData == "TOKEN_REGISTERED")
+                    if (responseData.Length > 0)
                     {
                         IsCardRegistered = true;
                         registerMessageLabel.Content = "Card was successfully registered";
                         registerMessageLabel.Visibility = Visibility.Visible;
+                        tokenTextBox.Text = responseData;
                     }
-                    else if (responseData == "TOKEN_REGISTRATION_FAILED")
+                    else if (responseData.Length == 0)
                     {
                         IsCardRegistered = false;
                         registerMessageLabel.Content = "The card is already registered";
@@ -182,7 +181,6 @@ namespace BankTokenClient
                     {
                         MessageBox.Show("Unexpected response from the server.");
                     }
-                    //}
                 }
                 else
                 {

@@ -104,9 +104,9 @@ namespace BankTokenServer
                                 if (command == "REGISTER_TOKEN")
                                 {
                                     string cardNumber = requestData[1];
-                                    bool isTokenRegistered = await RegisterToken(cardNumber);
+                                    string isTokenRegistered = await RegisterToken(cardNumber);
 
-                                    string response = isTokenRegistered ? "TOKEN_REGISTERED" : "TOKEN_REGISTRATION_FAILED";
+                                    string response = isTokenRegistered.Length > 0 ? "TOKEN_REGISTERED" : "TOKEN_REGISTRATION_FAILED";
                                     byte[] responseBuffer = Encoding.UTF8.GetBytes(response);
                                     await stream.WriteAsync(responseBuffer, 0, responseBuffer.Length);
                                 }
@@ -153,7 +153,7 @@ namespace BankTokenServer
             }
         }
 
-        private async Task<bool> RegisterToken(string cardNumber)
+        private async Task<string> RegisterToken(string cardNumber)
         {
             bool isTokenRegistered = IsCardRegistered(cardNumber);
 
@@ -161,9 +161,10 @@ namespace BankTokenServer
             {
                 string token = TokenizeCard(cardNumber);
                 SaveTokenToXML(cardNumber, token);
+                return token;
             }
 
-            return !isTokenRegistered;
+            return string.Empty;
         }
 
         private bool IsCardRegistered(string cardNumber)
