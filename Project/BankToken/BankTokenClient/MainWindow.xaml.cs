@@ -2,7 +2,6 @@
 using System.Net.Sockets;
 using System.Text;
 using System.Windows;
-using System.Windows.Controls;
 
 namespace BankTokenClient
 {
@@ -16,7 +15,7 @@ namespace BankTokenClient
 
         public event PropertyChangedEventHandler? PropertyChanged;
         public static readonly DependencyProperty IsValidBankCardProperty =
-            DependencyProperty.Register("IsValidBankCard", typeof(bool), typeof(LoginForm), new PropertyMetadata(false));
+            DependencyProperty.Register("IsValidBankCard", typeof(bool), typeof(MainWindow), new PropertyMetadata(false));
 
         public string CreditCardNumber
         {
@@ -24,7 +23,7 @@ namespace BankTokenClient
             set
             {
                 _creditCardNumber = value;
-                IsValidCreditCard = IsCreditCardValid(_creditCardNumber);
+                IsValidBankCard = IsCreditCardValid(_creditCardNumber);
                 OnPropertyChanged(nameof(CreditCardNumber));
             }
         }
@@ -35,15 +34,6 @@ namespace BankTokenClient
             set { SetValue(IsValidBankCardProperty, value); }
         }
 
-        public bool IsValidCreditCard
-        {
-            get { return _isValidCreditCard; }
-            set
-            {
-                _isValidCreditCard = value;
-                OnPropertyChanged(nameof(IsValidCreditCard));
-            }
-        }
         public MainWindow()
         {
             InitializeComponent();
@@ -61,11 +51,11 @@ namespace BankTokenClient
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-
         private void Window_Closing(object sender, CancelEventArgs e)
         {
             try
             {
+                _client.Close();
                 _stream.Close();
             }
             catch (Exception ex)
@@ -87,12 +77,10 @@ namespace BankTokenClient
             registerButton.Visibility = Visibility.Visible;
         }
 
-
-
         public static bool IsCreditCardValid(string creditCardNumber)
         {
             int sum = 0;
-            bool alternate = true;
+            bool alternate = false;
 
             for (int i = creditCardNumber.Length - 1; i >= 0; i--)
             {
@@ -159,14 +147,6 @@ namespace BankTokenClient
         private void GetCardButton_Click(object sender, RoutedEventArgs e)
         {
 
-        }
-
-        private void InputTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
-        {
-            if (sender is TextBox textBox)
-            {
-                CreditCardNumber = textBox.Text;
-            }
         }
     }
 }
