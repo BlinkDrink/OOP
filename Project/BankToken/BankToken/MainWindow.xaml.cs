@@ -104,10 +104,10 @@ namespace BankTokenServer
                                 if (command == "REGISTER_TOKEN")
                                 {
                                     string cardNumber = requestData[1];
-                                    string isTokenRegistered = await RegisterToken(cardNumber);
+                                    string token = await RegisterToken(cardNumber);
 
-                                    string response = isTokenRegistered.Length > 0 ? "TOKEN_REGISTERED" : "TOKEN_REGISTRATION_FAILED";
-                                    byte[] responseBuffer = Encoding.UTF8.GetBytes(response);
+                                    string response = token.Length == 0 ? "INVALID_TOKEN" : token;
+                                    byte[] responseBuffer = Encoding.UTF8.GetBytes(token);
                                     await stream.WriteAsync(responseBuffer, 0, responseBuffer.Length);
                                 }
                                 else if (command == "GET_CARD_NUMBER")

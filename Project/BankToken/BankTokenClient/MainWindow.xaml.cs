@@ -164,14 +164,14 @@ namespace BankTokenClient
                     int bytesRead = await _stream.ReadAsync(responseBuffer, 0, responseBuffer.Length);
                     string responseData = Encoding.UTF8.GetString(responseBuffer, 0, bytesRead);
 
-                    if (responseData.Length > 0)
+                    if (responseData.Length == 16)
                     {
                         IsCardRegistered = true;
                         registerMessageLabel.Content = "Card was successfully registered";
                         registerMessageLabel.Visibility = Visibility.Visible;
                         tokenTextBox.Text = responseData;
                     }
-                    else if (responseData.Length == 0)
+                    else if (responseData == "INVALID_TOKEN")
                     {
                         IsCardRegistered = false;
                         registerMessageLabel.Content = "The card is already registered";
