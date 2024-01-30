@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using System.Windows.Data;
 
-namespace BankTokenClient
+namespace BankTokenAppClient
 {
     public class BooleanToMessageConverter : IValueConverter
     {

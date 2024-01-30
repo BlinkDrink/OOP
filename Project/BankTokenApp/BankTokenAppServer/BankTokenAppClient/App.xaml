@@ -1,7 +1,7 @@
-﻿<Application x:Class="BankToken.App"
+﻿<Application x:Class="BankTokenAppClient.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:BankToken"
+             xmlns:local="clr-namespace:BankTokenAppClient"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
          

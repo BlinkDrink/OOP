@@ -2,7 +2,7 @@
 using System.Data;
 using System.Windows;
 
-namespace BankTokenClient
+namespace BankTokenAppClient
 {
     /// <summary>
     /// Interaction logic for App.xaml

@@ -1,0 +1,14 @@
+﻿<Window x:Class="BankTokenAppClient.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:BankTokenAppClient"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="892" Closing="Window_Closing">
+    <Grid>
+        <local:LoginForm x:Name="loginForm" HorizontalAlignment="Center" VerticalAlignment="Center" Width="295"/>
+        <local:CardTokenMenu x:Name="cardTokenMenu"  HorizontalAlignment="Center" VerticalAlignment="Top" Width="872" Height="424" Margin="0,10,0,0"/>
+
+    </Grid>
+</Window>

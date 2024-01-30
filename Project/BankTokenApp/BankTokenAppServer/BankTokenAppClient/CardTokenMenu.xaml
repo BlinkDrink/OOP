@@ -1,0 +1,51 @@
+﻿<UserControl x:Class="BankTokenAppClient.CardTokenMenu"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:BankTokenAppClient"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" Width="859">
+    <UserControl.Resources>
+        <local:BooleanToMessageConverter x:Key="BooleanToMessageConverter" />
+    </UserControl.Resources>
+    <Grid>
+        <TextBox x:Name="inputTextBox" HorizontalAlignment="Left" Margin="34,183,0,0" TextWrapping="Wrap" Text="{Binding CreditCardNumber, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="283" Height="36" FontSize="20" TextChanged="InputTextBox_TextChanged"/>
+        <Button x:Name="getButton" Content="Get card by Token" HorizontalAlignment="Left" Margin="348,183,0,0" VerticalAlignment="Top" Height="36" Width="176" RenderTransformOrigin="0.5,0.5" Click="GetCardButton_Click"/>
+
+
+        <Button x:Name="registerButton" IsEnabled="{Binding IsValidBankCard}" Content="Register token by card" HorizontalAlignment="Left" Margin="348,241,0,0" VerticalAlignment="Top" Height="36" Width="176" Click="RegisterCardButton_Click"/>
+        <Label x:Name="inputMessageLabel" Content="{Binding IsValidBankCard, Converter={StaticResource BooleanToMessageConverter}}" FontSize="15" HorizontalAlignment="Left" Margin="34,241,0,0" VerticalAlignment="Top" Height="36" Width="283">
+            <Label.Style>
+                <Style TargetType="Label">
+                    <Setter Property="Foreground" Value="Red" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsValidBankCard}" Value="True">
+                            <Setter Property="Foreground" Value="Green" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Label.Style>
+        </Label>
+        <Label x:Name="registerMessageLabel"  Content="" HorizontalAlignment="Left" Margin="548,241,0,0" VerticalAlignment="Top" FontSize="10"  Height="36" Width="282">
+            <Label.Style>
+                <Style TargetType="Label">
+                    <Setter Property="Foreground" Value="Red" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsCardRegistered}" Value="True">
+                            <Setter Property="Foreground" Value="Green" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Label.Style>
+        </Label>
+        <TextBox x:Name="tokenTextBox"  HorizontalAlignment="Left" Margin="548,183,0,0" TextWrapping="Wrap" IsReadOnly="True"  Text="" VerticalAlignment="Top" Width="282" Height="36" FontSize="20"/>
+        <Label Content="Can Register:" HorizontalAlignment="Left" Margin="34,42,0,0" VerticalAlignment="Top" FontSize="20" RenderTransformOrigin="0.512,0.559"/>
+        <Label Content="Can Retrieve:" HorizontalAlignment="Left" Margin="34,84,0,0" VerticalAlignment="Top" FontSize="20" RenderTransformOrigin="0.512,0.559"/>
+        <Label x:Name="canRegisterLabel" Content="Waiting..." HorizontalAlignment="Left" Margin="176,42,0,0" VerticalAlignment="Top" FontSize="20" RenderTransformOrigin="0.512,0.559" Foreground="Gray"/>
+        <Label x:Name="canRetrieveLabel" Content="Waiting..." Foreground="Gray" HorizontalAlignment="Left" Margin="176,84,0,0" VerticalAlignment="Top" FontSize="20" RenderTransformOrigin="0.512,0.559"/>
+        <Label Content="Username:" HorizontalAlignment="Left" Margin="34,5,0,0" VerticalAlignment="Top" FontSize="20" RenderTransformOrigin="0.512,0.559"/>
+        <Label x:Name="currentUsername" Content="" HorizontalAlignment="Left" Margin="164,5,0,0" VerticalAlignment="Top" FontSize="20" RenderTransformOrigin="0.512,0.559"/>
+
+    </Grid>
+</UserControl>
