@@ -68,21 +68,6 @@ namespace BankTokenAppServer
             }
         }
 
-        private void SaveUsers()
-        {
-            try
-            {
-                using (var writer = new StreamWriter(UsersFile))
-                {
-                    usersSerializer.Serialize(writer, users);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Error saving users", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
         private void LoadTokens()
         {
             if (File.Exists("tokens.xml"))
@@ -214,6 +199,56 @@ namespace BankTokenAppServer
             token.Append(cardNumber.Substring(12));
 
             return token.ToString();
+        }
+
+        public bool ExportTokensByToken(string filePath)
+        {
+            try
+            {
+                using (StreamWriter writer = new StreamWriter(filePath))
+                {
+                    writer.WriteLine("Token           \tCard Number");
+
+                    var sortedTokens = tokens.OrderBy(pair => pair.Token);
+
+                    foreach (var pair in sortedTokens)
+                    {
+                        writer.WriteLine($"{pair.Token}\t{pair.CardNumber}");
+                    }
+
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+        }
+
+        public bool ExportTokensByCard(string filePath)
+        {
+            try
+            {
+                using (StreamWriter writer = new StreamWriter(filePath))
+                {
+                    writer.WriteLine("Card Number     \tToken");
+
+                    var sortedTokens = tokens.OrderBy(pair => pair.CardNumber);
+
+                    foreach (var pair in sortedTokens)
+                    {
+                        writer.WriteLine($"{pair.CardNumber}\t{pair.Token}");
+                    }
+
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
         }
 
         private void HandleClient(TcpClient client)

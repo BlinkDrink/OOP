@@ -5,9 +5,23 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BankTokenAppServer"
         mc:Ignorable="d"
-        Title="MainWindow" Height="426" Width="587" Closing="Window_Closing">
+        Title="MainWindow" Height="496" Width="785" Closing="Window_Closing">
     <Grid>
-        <TextBox x:Name="logTextBox" HorizontalAlignment="Center" TextWrapping="Wrap" Text="" VerticalAlignment="Center" Width="484" Height="269" IsReadOnly="True"/>
-        <Button x:Name="StartServerButton" Click="StartServerButton_Click"  Content="Start Server" HorizontalAlignment="Center" Margin="0,25,0,0" VerticalAlignment="Top" Height="30" Width="484"/>
+        <TextBox x:Name="logTextBox" HorizontalAlignment="Left" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="330" Height="345" IsReadOnly="True" Margin="392,91,0,0"/>
+        <Button x:Name="StartServerButton" Click="StartServerButton_Click"  Content="Start Server" HorizontalAlignment="Left" Margin="392,56,0,0" VerticalAlignment="Top" Height="30" Width="330"/>
+        <Label Content="Path to file" HorizontalAlignment="Left" Margin="25,24,0,0" VerticalAlignment="Top" Height="47" Width="156" RenderTransformOrigin="0.5,0.5" FontSize="15">
+            <Label.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="0"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Label.RenderTransform>
+        </Label>
+        <TextBox x:Name="pathToFileTextBox" HorizontalAlignment="Left" Margin="25,56,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="329" Height="30" FontSize="20">
+        </TextBox>
+        <Button x:Name="exportByTokenButton" Content="Export By Token" HorizontalAlignment="Left" Margin="25,104,0,0" VerticalAlignment="Top" Height="36" Width="156" RenderTransformOrigin="0.5,0.5" Click="exportByTokenButton_Click"/>
+        <Button x:Name="exportByCardButton" Content="Export By Card" HorizontalAlignment="Left" Margin="198,104,0,0" VerticalAlignment="Top" Height="36" Width="156" RenderTransformOrigin="0.5,0.5" Click="exportByCardButton_Click"/>
     </Grid>
 </Window>

@@ -24,7 +24,7 @@ namespace BankTokenAppClient
 
         private TcpClient? client;
 
-        public User LoggedUser { get; private set; }
+        public User? LoggedUser { get; private set; }
 
         private NetworkStream? stream;
         private StreamReader? reader;
@@ -35,10 +35,10 @@ namespace BankTokenAppClient
             try
             {
                 client = new TcpClient(ServerAddress, Port);
-
                 stream = client.GetStream();
                 reader = new StreamReader(stream, Encoding.UTF8);
                 writer = new StreamWriter(stream, Encoding.UTF8);
+                LoggedUser = null;
             }
             catch (Exception ex)
             {

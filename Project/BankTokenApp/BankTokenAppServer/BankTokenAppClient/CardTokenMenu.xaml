@@ -63,6 +63,28 @@
         <Label x:Name="canRetrieveLabel" Content="Waiting..." Foreground="Gray" HorizontalAlignment="Left" Margin="176,84,0,0" VerticalAlignment="Top" FontSize="20" RenderTransformOrigin="0.512,0.559"/>
         <Label Content="Username:" HorizontalAlignment="Left" Margin="34,5,0,0" VerticalAlignment="Top" FontSize="20" RenderTransformOrigin="0.512,0.559"/>
         <Label x:Name="currentUsername" Content="" HorizontalAlignment="Left" Margin="164,5,0,0" VerticalAlignment="Top" FontSize="20" RenderTransformOrigin="0.512,0.559"/>
+        <Label Content="Card/Token Input Field" HorizontalAlignment="Left" Margin="34,154,0,0" VerticalAlignment="Top" Height="47" Width="176" RenderTransformOrigin="0.5,0.5" FontSize="15
+               ">
+            <Label.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="0"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Label.RenderTransform>
+        </Label>
+        <Label Content="Card/Token Output Field" HorizontalAlignment="Left" Margin="548,154,0,0" VerticalAlignment="Top" Height="47" Width="187" RenderTransformOrigin="0.5,0.5" FontSize="15                ">
+            <Label.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="0"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Label.RenderTransform>
+        </Label>
+
 
     </Grid>
 </UserControl>
