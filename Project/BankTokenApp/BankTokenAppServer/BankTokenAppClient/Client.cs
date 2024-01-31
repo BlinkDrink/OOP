@@ -162,35 +162,6 @@ namespace BankTokenAppClient
             return sum % 10 != 0;
         }
 
-        private string GenerateToken(string cardNumber)
-        {
-            cardNumber = cardNumber.Replace(" ", "").Replace("-", "");
-
-            StringBuilder token = new StringBuilder();
-
-            Random random = new Random();
-            int firstDigit = random.Next(0, 10);
-            while (firstDigit == 3 || firstDigit == 4 || firstDigit == 5 || firstDigit == 6)
-            {
-                firstDigit = random.Next(0, 10);
-            }
-            token.Append(firstDigit);
-
-            for (int i = 1; i < 12; i++)
-            {
-                int digit = random.Next(0, 10);
-                while (digit == int.Parse(cardNumber[i].ToString()))
-                {
-                    digit = random.Next(0, 10);
-                }
-                token.Append(digit);
-            }
-
-            token.Append(cardNumber.Substring(12));
-
-            return token.ToString();
-        }
-
         public string RegisterToken(string cardNumber)
         {
             try

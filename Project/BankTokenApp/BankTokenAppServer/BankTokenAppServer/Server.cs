@@ -87,12 +87,11 @@ namespace BankTokenAppServer
         {
             if (File.Exists("tokens.xml"))
             {
-                XmlSerializer serializer = new XmlSerializer(typeof(List<CardTokenPair>));
                 using (FileStream stream = new FileStream("tokens.xml", FileMode.Open))
                 {
                     if (stream.Length > 0)
                     {
-                        tokens = (List<CardTokenPair>)serializer.Deserialize(stream);
+                        tokens = (List<CardTokenPair>)tokensSerializer.Deserialize(stream);
 
                     }
                     else

@@ -8,9 +8,26 @@
              d:DesignHeight="450" Width="859">
     <UserControl.Resources>
         <local:BooleanToMessageConverter x:Key="BooleanToMessageConverter" />
+        <Style x:Key="TextBoxErrorStyle" TargetType="{x:Type TextBox}">
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="True">
+                    <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"/>
+                    <Setter Property="Background" Value="Pink"/>
+                    <Setter Property="BorderBrush" Value="Red"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
     </UserControl.Resources>
     <Grid>
-        <TextBox x:Name="inputTextBox" HorizontalAlignment="Left" Margin="34,183,0,0" TextWrapping="Wrap" Text="{Binding CreditCardNumber, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="283" Height="36" FontSize="20" TextChanged="InputTextBox_TextChanged"/>
+        <TextBox x:Name="inputTextBox" HorizontalAlignment="Left" Margin="34,183,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="283" Height="36" FontSize="20" TextChanged="InputTextBox_TextChanged" Style="{StaticResource TextBoxErrorStyle}">
+            <TextBox.Text>
+                <Binding Path="CreditCardNumber" UpdateSourceTrigger="PropertyChanged" NotifyOnValidationError="True">
+                    <Binding.ValidationRules>
+                        <local:BankCardValidationRule/>
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>
         <Button x:Name="getButton" Content="Get card by Token" HorizontalAlignment="Left" Margin="348,183,0,0" VerticalAlignment="Top" Height="36" Width="176" RenderTransformOrigin="0.5,0.5" Click="GetCardButton_Click"/>
 
 

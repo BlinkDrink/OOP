@@ -107,7 +107,6 @@ namespace BankTokenAppClient
             try
             {
                 tokenTextBox.Text = client.RegisterToken(inputTextBox.Text);
-
             }
             catch (Exception ex)
             {
