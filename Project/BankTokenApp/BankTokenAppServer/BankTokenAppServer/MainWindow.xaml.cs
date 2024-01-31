@@ -5,23 +5,37 @@ using System.Windows;
 namespace BankTokenAppServer
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Main Window for the server side application
     /// </summary>
     public partial class MainWindow : Window
     {
+        #region Properties
         private Server server;
+        #endregion
 
+        #region Constructors
         public MainWindow()
         {
             InitializeComponent();
             server = new Server(logTextBox);
         }
+        #endregion
 
+        #region WindowClosing
         private void Window_Closing(object sender, CancelEventArgs e)
         {
             System.Environment.Exit(System.Environment.ExitCode);
         }
+        #endregion
 
+
+        #region ButtonClicks
+        /// <summary>
+        /// Button click method used to start up the server when clicked. 
+        /// Creates a new thread and executes the server.Start method
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void StartServerButton_Click(object sender, RoutedEventArgs e)
         {
             if (server != null)
@@ -35,6 +49,13 @@ namespace BankTokenAppServer
             logTextBox.Text += "Server is listening for incoming connections...\n";
         }
 
+        /// <summary>
+        /// Button click method used to export existing Card-Token relationship to a file
+        /// in the format Token-CardNumber, where the data is sorted by the Token
+        /// Opens a SaveFileDialog and lets the user pick a file
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void exportByTokenButton_Click(object sender, RoutedEventArgs e)
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog();
@@ -63,6 +84,13 @@ namespace BankTokenAppServer
             }
         }
 
+        /// <summary>
+        /// Button click method used to export existing Card-Token relationship to a file
+        /// in the format CardNumber-Token, where the data is sorted by the CardNumber
+        /// Opens a SaveFileDialog and lets the user pick a file
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void exportByCardButton_Click(object sender, RoutedEventArgs e)
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog();
@@ -90,5 +118,6 @@ namespace BankTokenAppServer
                 }
             }
         }
+        #endregion
     }
 }

@@ -8,15 +8,19 @@ using System.Xml.Serialization;
 
 namespace BankTokenAppServer
 {
+    /// <summary>
+    /// Represents the server entity that will be doing all of the back-end work
+    /// </summary>
     public class Server
     {
-        private const int Port = 55555;
+        #region Properties
+        private const int Port = 55555; // Default port on which to initialize socket
 
-        private const string ServerAddress = "127.0.0.1";
+        private const string ServerAddress = "127.0.0.1"; // localaddress
 
-        private const string UsersFile = "users.xml";
+        private const string UsersFile = "users.xml"; // users DB file
 
-        private const string TokensFile = "tokens.xml";
+        private const string TokensFile = "tokens.xml"; // tokens DB file
 
         private TextBox logBox;
 
@@ -25,10 +29,18 @@ namespace BankTokenAppServer
         private List<CardTokenPair> tokens;
 
         private XmlSerializer usersSerializer;
+
         private XmlSerializer tokensSerializer;
 
         private object syncLock;
+        #endregion
 
+        #region Constructors
+        /// <summary>
+        /// Initializing constructor for the server entity
+        /// Uses dependency injection for the log box to which data will be output.
+        /// </summary>
+        /// <param name="logger"></param>
         public Server(TextBox logger)
         {
             users = new List<User>();
@@ -40,7 +52,13 @@ namespace BankTokenAppServer
             LoadUsers();
             LoadTokens();
         }
+        #endregion
 
+        #region Methods
+        /// <summary>
+        /// Helper method to display data to the logbox
+        /// </summary>
+        /// <param name="message">Message which will be displayed</param>
         private void DisplayMessage(string message)
         {
             if (!logBox.Dispatcher.CheckAccess())
@@ -53,6 +71,10 @@ namespace BankTokenAppServer
             }
         }
 
+        /// <summary>
+        /// Helper method used to load the users in memory on startup
+        /// Uses path from the UsersFile property
+        /// </summary>
         private void LoadUsers()
         {
             try
@@ -68,6 +90,10 @@ namespace BankTokenAppServer
             }
         }
 
+        /// <summary>
+        /// Helper method used to load the card-tokens pairs in memory on startup
+        /// Uses path from the UsersFile property
+        /// </summary>
         private void LoadTokens()
         {
             if (File.Exists("tokens.xml"))
@@ -91,6 +117,10 @@ namespace BankTokenAppServer
             }
         }
 
+        /// <summary>
+        /// Helper method used to save the current state of tokens list
+        /// to a file (namely TokensFile property)
+        /// </summary>
         private void SaveTokens()
         {
             try
@@ -109,6 +139,11 @@ namespace BankTokenAppServer
             }
         }
 
+        /// <summary>
+        /// Initiates a listener on the local addres with the default port.
+        /// Awaits client connections and handles each of them separately in
+        /// a different thread
+        /// </summary>
         public void Start()
         {
             try
@@ -131,6 +166,11 @@ namespace BankTokenAppServer
             }
         }
 
+        /// <summary>
+        /// Helper method that checks if a given string is a valid card number
+        /// </summary>
+        /// <param name="cardNumber">the string which will be checked</param>
+        /// <returns></returns>
         private bool IsValidCardNumber(string cardNumber)
         {
             if (string.IsNullOrEmpty(cardNumber))
@@ -173,6 +213,12 @@ namespace BankTokenAppServer
             return sum % 10 == 0;
         }
 
+        /// <summary>
+        /// Helper method used to generate a random token based on 
+        /// a given card number
+        /// </summary>
+        /// <param name="cardNumber">The card number that will be used to generate token upon</param>
+        /// <returns></returns>
         private string GenerateToken(string cardNumber)
         {
             cardNumber = cardNumber.Replace(" ", "").Replace("-", "");
@@ -201,6 +247,12 @@ namespace BankTokenAppServer
             return token.ToString();
         }
 
+        /// <summary>
+        /// Helper method used to export Card-Token pairs to a file
+        /// in the format Token-CardNumber, where the data is sorted by Token
+        /// </summary>
+        /// <param name="filePath">Path to file in which pairs will be written</param>
+        /// <returns></returns>
         public bool ExportTokensByToken(string filePath)
         {
             try
@@ -226,6 +278,12 @@ namespace BankTokenAppServer
             }
         }
 
+        /// <summary>
+        /// /// Helper method used to export Card-Token pairs to a file
+        /// in the format CardNumber-Token, where the data is sorted by CardNumber
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
         public bool ExportTokensByCard(string filePath)
         {
             try
@@ -251,6 +309,10 @@ namespace BankTokenAppServer
             }
         }
 
+        /// <summary>
+        /// Handles the currently connected client by sending and receiving data upon request
+        /// </summary>
+        /// <param name="client"></param>
         private void HandleClient(TcpClient client)
         {
             try
@@ -366,5 +428,6 @@ namespace BankTokenAppServer
                 MessageBox.Show(ex.Message, "Error handling client", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+        #endregion
     }
 }
