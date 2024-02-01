@@ -7,8 +7,12 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="892" Closing="Window_Closing">
     <Grid>
-        <local:LoginForm x:Name="loginForm" HorizontalAlignment="Center" VerticalAlignment="Center" Width="295"/>
-        <local:CardTokenMenu x:Name="cardTokenMenu"  HorizontalAlignment="Center" VerticalAlignment="Top" Width="872" Height="424" Margin="0,10,0,0"/>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="124*"/>
+            <ColumnDefinition Width="99*"/>
+        </Grid.ColumnDefinitions>
+        <local:LoginForm x:Name="loginForm" HorizontalAlignment="Center" VerticalAlignment="Center" Width="296" Grid.ColumnSpan="2"/>
+        <local:CardTokenMenu x:Name="cardTokenMenu"  HorizontalAlignment="Left" VerticalAlignment="Top" Width="872" Height="424" Margin="10,10,0,0" Grid.ColumnSpan="2"/>
 
     </Grid>
 </Window>

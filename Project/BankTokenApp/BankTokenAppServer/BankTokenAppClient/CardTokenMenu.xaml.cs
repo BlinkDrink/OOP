@@ -10,17 +10,69 @@ namespace BankTokenAppClient
     /// </summary>
     public partial class CardTokenMenu : UserControl
     {
-        private Client client;
-        private string creditCardNumber;
+        private Client? client;
+        private string? creditCardNumber;
+        private string? tokenNumber;
+
         public event PropertyChangedEventHandler? PropertyChanged;
         public static readonly DependencyProperty IsValidBankCardProperty =
-            DependencyProperty.Register("IsValidBankCard", typeof(bool), typeof(MainWindow), new PropertyMetadata(false));
+            DependencyProperty.Register("IsValidBankCard", typeof(bool), typeof(UserControl), new PropertyMetadata(false));
+        public static readonly DependencyProperty IsValidTokenProperty =
+            DependencyProperty.Register("IsValidToken", typeof(bool), typeof(UserControl), new PropertyMetadata(false));
         public static readonly DependencyProperty IsCardRegisteredProperty =
-            DependencyProperty.Register("IsCardRegistered", typeof(bool), typeof(MainWindow), new PropertyMetadata(false));
+            DependencyProperty.Register("IsCardRegistered", typeof(bool), typeof(UserControl), new PropertyMetadata(false));
 
         public CardTokenMenu()
         {
             InitializeComponent();
+            DataContext = this;
+            client = null;
+            creditCardNumber = null;
+        }
+
+        public string CreditCardNumber
+        {
+            get { return creditCardNumber; }
+            set
+            {
+                creditCardNumber = value;
+                //IsValidBankCard = IsCreditCardValid(creditCardNumber);
+                OnPropertyChanged(nameof(CreditCardNumber));
+            }
+        }
+
+        public string TokenNumber
+        {
+            get { return tokenNumber; }
+            set
+            {
+                tokenNumber = value;
+                //IsValidBankCard = IsValidToken(tokenNumber);
+                OnPropertyChanged(nameof(TokenNumber));
+            }
+        }
+
+        public bool IsValidBankCard
+        {
+            get { return (bool)GetValue(IsValidBankCardProperty); }
+            set { SetValue(IsValidBankCardProperty, value); }
+        }
+
+        public bool IsValidToken
+        {
+            get { return (bool)GetValue(IsValidTokenProperty); }
+            set { SetValue(IsValidTokenProperty, value); }
+        }
+
+        public bool IsCardRegistered
+        {
+            get { return (bool)GetValue(IsCardRegisteredProperty); }
+            set { SetValue(IsCardRegisteredProperty, value); }
+        }
+
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         public void setClient(Client c)
@@ -29,6 +81,8 @@ namespace BankTokenAppClient
             currentUsername.Content = c.LoggedUser.Username;
             canRegisterLabel.Content = c.LoggedUser.CanRegisterToken ? "Yes" : "No";
             canRetrieveLabel.Content = c.LoggedUser.CanRetrieveCardNumber ? "Yes" : "No";
+            getButton.IsEnabled = c.LoggedUser.CanRetrieveCardNumber;
+            registerButton.IsEnabled = c.LoggedUser.CanRegisterToken;
 
             changeLabelColor(canRegisterLabel);
             changeLabelColor(canRetrieveLabel);
@@ -44,34 +98,6 @@ namespace BankTokenAppClient
             {
                 l.Foreground = new SolidColorBrush(Colors.Red);
             }
-        }
-
-        public string CreditCardNumber
-        {
-            get { return creditCardNumber; }
-            set
-            {
-                creditCardNumber = value;
-                IsValidBankCard = IsCreditCardValid(creditCardNumber);
-                OnPropertyChanged(nameof(CreditCardNumber));
-            }
-        }
-
-        public bool IsValidBankCard
-        {
-            get { return (bool)GetValue(IsValidBankCardProperty); }
-            set { SetValue(IsValidBankCardProperty, value); }
-        }
-
-        public bool IsCardRegistered
-        {
-            get { return (bool)GetValue(IsCardRegisteredProperty); }
-            set { SetValue(IsCardRegisteredProperty, value); }
-        }
-
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         public static bool IsCreditCardValid(string creditCardNumber)
@@ -118,7 +144,7 @@ namespace BankTokenAppClient
         {
             try
             {
-                tokenTextBox.Text = client.RetrieveCardNumber(inputTextBox.Text);
+                cardNumberOutputTextBox.Text = client.RetrieveCardNumber(tokenInputTextBox.Text);
             }
             catch (Exception ex)
             {
@@ -128,7 +154,7 @@ namespace BankTokenAppClient
 
         private void InputTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
-            registerMessageLabel.Visibility = Visibility.Hidden;
+            //registerMessageLabel.Visibility = Visibility.Hidden;
         }
     }
 }

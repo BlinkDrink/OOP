@@ -28,10 +28,10 @@
                 </Binding>
             </TextBox.Text>
         </TextBox>
-        <Button x:Name="getButton" Content="Get card by Token" HorizontalAlignment="Left" Margin="348,183,0,0" VerticalAlignment="Top" Height="36" Width="176" RenderTransformOrigin="0.5,0.5" Click="GetCardButton_Click"/>
+        <Button x:Name="getButton" Content="Get card by Token" HorizontalAlignment="Left" Margin="348,331,0,0" VerticalAlignment="Top" Height="36" Width="176" RenderTransformOrigin="0.5,0.5" Click="GetCardButton_Click"/>
 
 
-        <Button x:Name="registerButton" IsEnabled="{Binding IsValidBankCard}" Content="Register token by card" HorizontalAlignment="Left" Margin="348,241,0,0" VerticalAlignment="Top" Height="36" Width="176" Click="RegisterCardButton_Click"/>
+        <Button x:Name="registerButton" IsEnabled="{Binding IsValidBankCard}" Content="Register token by card" HorizontalAlignment="Left" Margin="348,183,0,0" VerticalAlignment="Top" Height="36" Width="176" Click="RegisterCardButton_Click"/>
         <Label x:Name="inputMessageLabel" Content="{Binding IsValidBankCard, Converter={StaticResource BooleanToMessageConverter}}" FontSize="15" HorizontalAlignment="Left" Margin="34,241,0,0" VerticalAlignment="Top" Height="36" Width="283">
             <Label.Style>
                 <Style TargetType="Label">
@@ -63,7 +63,7 @@
         <Label x:Name="canRetrieveLabel" Content="Waiting..." Foreground="Gray" HorizontalAlignment="Left" Margin="176,84,0,0" VerticalAlignment="Top" FontSize="20" RenderTransformOrigin="0.512,0.559"/>
         <Label Content="Username:" HorizontalAlignment="Left" Margin="34,5,0,0" VerticalAlignment="Top" FontSize="20" RenderTransformOrigin="0.512,0.559"/>
         <Label x:Name="currentUsername" Content="" HorizontalAlignment="Left" Margin="164,5,0,0" VerticalAlignment="Top" FontSize="20" RenderTransformOrigin="0.512,0.559"/>
-        <Label Content="Card/Token Input Field" HorizontalAlignment="Left" Margin="34,154,0,0" VerticalAlignment="Top" Height="47" Width="176" RenderTransformOrigin="0.5,0.5" FontSize="15
+        <Label Content="Card Number Input Field" HorizontalAlignment="Left" Margin="34,146,0,0" VerticalAlignment="Top" Height="37" Width="283" RenderTransformOrigin="0.5,0.5" FontSize="15
                ">
             <Label.RenderTransform>
                 <TransformGroup>
@@ -74,7 +74,35 @@
                 </TransformGroup>
             </Label.RenderTransform>
         </Label>
-        <Label Content="Card/Token Output Field" HorizontalAlignment="Left" Margin="548,154,0,0" VerticalAlignment="Top" Height="47" Width="187" RenderTransformOrigin="0.5,0.5" FontSize="15                ">
+        <Label Content="Registered Token Output Field" HorizontalAlignment="Left" Margin="548,154,0,0" VerticalAlignment="Top" Height="29" Width="282" RenderTransformOrigin="0.5,0.5" FontSize="15                ">
+            <Label.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="0"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Label.RenderTransform>
+        </Label>
+        <TextBox x:Name="tokenInputTextBox" HorizontalAlignment="Left" Margin="34,331,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="283" Height="36" FontSize="20" TextChanged="InputTextBox_TextChanged" Style="{StaticResource TextBoxErrorStyle}">
+            <Binding Path="TokenNumber" UpdateSourceTrigger="PropertyChanged" NotifyOnValidationError="True">
+                <Binding.ValidationRules>
+                    <local:TokenValidationRule/>
+                </Binding.ValidationRules>
+            </Binding>
+        </TextBox>
+        <TextBox x:Name="cardNumberOutputTextBox"  HorizontalAlignment="Left" Margin="548,331,0,0" TextWrapping="Wrap" IsReadOnly="True"  Text="" VerticalAlignment="Top" Width="282" Height="36" FontSize="20"/>
+        <Label Content="Token Input Field" HorizontalAlignment="Left" Margin="34,296,0,0" VerticalAlignment="Top" Height="30" Width="283" RenderTransformOrigin="0.5,0.5" FontSize="15                ">
+            <Label.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="0"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Label.RenderTransform>
+        </Label>
+        <Label Content="Retrieved Card Number Output Field" HorizontalAlignment="Left" Margin="548,302,0,0" VerticalAlignment="Top" Height="29" Width="282" RenderTransformOrigin="0.5,0.5" FontSize="15                ">
             <Label.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>

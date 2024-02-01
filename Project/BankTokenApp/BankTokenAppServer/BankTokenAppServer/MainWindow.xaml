@@ -7,21 +7,9 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="496" Width="785" Closing="Window_Closing">
     <Grid>
-        <TextBox x:Name="logTextBox" HorizontalAlignment="Left" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="330" Height="345" IsReadOnly="True" Margin="392,91,0,0"/>
-        <Button x:Name="StartServerButton" Click="StartServerButton_Click"  Content="Start Server" HorizontalAlignment="Left" Margin="392,56,0,0" VerticalAlignment="Top" Height="30" Width="330"/>
-        <Label Content="Path to file" HorizontalAlignment="Left" Margin="25,24,0,0" VerticalAlignment="Top" Height="47" Width="156" RenderTransformOrigin="0.5,0.5" FontSize="15">
-            <Label.RenderTransform>
-                <TransformGroup>
-                    <ScaleTransform/>
-                    <SkewTransform/>
-                    <RotateTransform Angle="0"/>
-                    <TranslateTransform/>
-                </TransformGroup>
-            </Label.RenderTransform>
-        </Label>
-        <TextBox x:Name="pathToFileTextBox" HorizontalAlignment="Left" Margin="25,56,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="329" Height="30" FontSize="20">
-        </TextBox>
-        <Button x:Name="exportByTokenButton" Content="Export By Token" HorizontalAlignment="Left" Margin="25,104,0,0" VerticalAlignment="Top" Height="36" Width="156" RenderTransformOrigin="0.5,0.5" Click="exportByTokenButton_Click"/>
-        <Button x:Name="exportByCardButton" Content="Export By Card" HorizontalAlignment="Left" Margin="198,104,0,0" VerticalAlignment="Top" Height="36" Width="156" RenderTransformOrigin="0.5,0.5" Click="exportByCardButton_Click"/>
+        <TextBox x:Name="logTextBox" HorizontalAlignment="Left" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="694" Height="329" IsReadOnly="True" Margin="28,107,0,0"/>
+        <Button x:Name="StartServerButton" Click="StartServerButton_Click"  Content="Start Server" HorizontalAlignment="Left" Margin="566,51,0,0" VerticalAlignment="Top" Height="30" Width="156"/>
+        <Button x:Name="exportByTokenButton" Content="Export By Token" HorizontalAlignment="Left" Margin="28,56,0,0" VerticalAlignment="Top" Height="30" Width="156" RenderTransformOrigin="0.5,0.5" Click="exportByTokenButton_Click"/>
+        <Button x:Name="exportByCardButton" Content="Export By Card" HorizontalAlignment="Left" Margin="297,56,0,0" VerticalAlignment="Top" Height="30" Width="156" RenderTransformOrigin="0.5,0.5" Click="exportByCardButton_Click"/>
     </Grid>
 </Window>
