@@ -28,6 +28,7 @@ namespace BankTokenAppClient
             DataContext = this;
             client = null;
             creditCardNumber = null;
+            tokenNumber = null;
         }
 
         public string CreditCardNumber
@@ -36,7 +37,6 @@ namespace BankTokenAppClient
             set
             {
                 creditCardNumber = value;
-                //IsValidBankCard = IsCreditCardValid(creditCardNumber);
                 OnPropertyChanged(nameof(CreditCardNumber));
             }
         }

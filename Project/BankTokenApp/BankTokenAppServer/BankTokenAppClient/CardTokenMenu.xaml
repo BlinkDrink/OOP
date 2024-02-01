@@ -9,7 +9,15 @@
     <UserControl.Resources>
         <local:BooleanToMessageConverter x:Key="BooleanToMessageConverter" />
         <Style x:Key="TextBoxErrorStyle" TargetType="{x:Type TextBox}">
+            <!-- Set the default background to white -->
+            <Setter Property="Background" Value="White"/>
+            <!-- Set the default border brush to black -->
+            <Setter Property="BorderBrush" Value="Black"/>
             <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="False">
+                    <Setter Property="Background" Value="LightGreen"/>
+                    <Setter Property="BorderBrush" Value="Green"/>
+                </Trigger>
                 <Trigger Property="Validation.HasError" Value="True">
                     <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"/>
                     <Setter Property="Background" Value="Pink"/>
@@ -87,7 +95,7 @@
         <TextBox x:Name="tokenInputTextBox" HorizontalAlignment="Left" Margin="34,331,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="283" Height="36" FontSize="20" TextChanged="InputTextBox_TextChanged" Style="{StaticResource TextBoxErrorStyle}">
             <Binding Path="TokenNumber" UpdateSourceTrigger="PropertyChanged" NotifyOnValidationError="True">
                 <Binding.ValidationRules>
-                    <local:TokenValidationRule/>
+                    <local:TokenValidationRule ValidationStep="RawProposedValue"/>
                 </Binding.ValidationRules>
             </Binding>
         </TextBox>

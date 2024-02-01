@@ -6,7 +6,7 @@ namespace BankTokenAppClient
 {
     public class TokenValidationRule : ValidationRule
     {
-        private const string TokenPattern = @"^(?![3456])[0-9]{11}[0-9]{4}$";
+        private const string TokenPattern = @"^[0-27-9][0-9]{11}[0-9]{4}$";
 
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
