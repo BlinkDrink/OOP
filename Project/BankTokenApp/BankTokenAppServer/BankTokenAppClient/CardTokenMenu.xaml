@@ -40,7 +40,7 @@
 
 
         <Button x:Name="registerButton" IsEnabled="{Binding IsValidBankCard}" Content="Register token by card" HorizontalAlignment="Left" Margin="348,183,0,0" VerticalAlignment="Top" Height="36" Width="176" Click="RegisterCardButton_Click"/>
-        <Label x:Name="inputMessageLabel" Content="{Binding IsValidBankCard, Converter={StaticResource BooleanToMessageConverter}}" FontSize="15" HorizontalAlignment="Left" Margin="34,241,0,0" VerticalAlignment="Top" Height="36" Width="283">
+        <Label x:Name="inputMessageLabel" Visibility="Hidden"  Content="{Binding IsValidBankCard, Converter={StaticResource BooleanToMessageConverter}}" FontSize="15" HorizontalAlignment="Left" Margin="34,241,0,0" VerticalAlignment="Top" Height="36" Width="283">
             <Label.Style>
                 <Style TargetType="Label">
                     <Setter Property="Foreground" Value="Red" />

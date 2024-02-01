@@ -3,6 +3,9 @@ using System.Windows.Data;
 
 namespace BankTokenAppClient
 {
+    /// <summary>
+    /// Simple class used to convert boolean value to text used to display various messages on screen
+    /// </summary>
     public class BooleanToMessageConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

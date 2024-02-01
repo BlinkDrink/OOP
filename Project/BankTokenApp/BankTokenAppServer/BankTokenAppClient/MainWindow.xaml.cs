@@ -5,9 +5,11 @@ namespace BankTokenAppClient
 {
     public partial class MainWindow : Window
     {
+        #region Properties
         private Client client;
         private LoginForm loginFormInstance;
         private CardTokenMenu cardTokenMenuInstance;
+        #endregion
 
         public MainWindow()
         {
@@ -20,6 +22,15 @@ namespace BankTokenAppClient
 
             loginFormInstance.LoginStatus += LoginHandler;
         }
+
+        #region EventHandlers
+        /// <summary>
+        /// Upon successful login attempt, LoginHandler gets triggered
+        /// and retrieves the data from the LoginEventArgs
+        /// Sets the view accordingly
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void LoginHandler(object sender, LoginEventArgs e)
         {
             client = e.ConnectedClient;
@@ -27,6 +38,7 @@ namespace BankTokenAppClient
             loginForm.Visibility = Visibility.Hidden;
             cardTokenMenuInstance.Visibility = Visibility.Visible;
         }
+        #endregion
 
         private void Window_Closing(object sender, CancelEventArgs e)
         {

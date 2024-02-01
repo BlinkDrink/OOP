@@ -10,6 +10,7 @@ namespace BankTokenAppClient
     /// </summary>
     public partial class CardTokenMenu : UserControl
     {
+        #region Properties
         private Client? client;
         private string? creditCardNumber;
         private string? tokenNumber;
@@ -21,15 +22,6 @@ namespace BankTokenAppClient
             DependencyProperty.Register("IsValidToken", typeof(bool), typeof(UserControl), new PropertyMetadata(false));
         public static readonly DependencyProperty IsCardRegisteredProperty =
             DependencyProperty.Register("IsCardRegistered", typeof(bool), typeof(UserControl), new PropertyMetadata(false));
-
-        public CardTokenMenu()
-        {
-            InitializeComponent();
-            DataContext = this;
-            client = null;
-            creditCardNumber = null;
-            tokenNumber = null;
-        }
 
         public string CreditCardNumber
         {
@@ -47,7 +39,6 @@ namespace BankTokenAppClient
             set
             {
                 tokenNumber = value;
-                //IsValidBankCard = IsValidToken(tokenNumber);
                 OnPropertyChanged(nameof(TokenNumber));
             }
         }
@@ -69,12 +60,27 @@ namespace BankTokenAppClient
             get { return (bool)GetValue(IsCardRegisteredProperty); }
             set { SetValue(IsCardRegisteredProperty, value); }
         }
+        #endregion
 
+        #region Constructors
+        public CardTokenMenu()
+        {
+            InitializeComponent();
+            DataContext = this;
+            client = null;
+            creditCardNumber = null;
+            tokenNumber = null;
+        }
+        #endregion
+
+        #region EventHandlers
         protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+        #endregion
 
+        #region CustomSetters
         public void setClient(Client c)
         {
             client = c;
@@ -99,7 +105,9 @@ namespace BankTokenAppClient
                 l.Foreground = new SolidColorBrush(Colors.Red);
             }
         }
+        #endregion
 
+        #region HelperMethods
         public static bool IsCreditCardValid(string creditCardNumber)
         {
             int sum = 0;
@@ -127,7 +135,14 @@ namespace BankTokenAppClient
 
             return sum % 10 == 0;
         }
+        #endregion
 
+        #region ButtonClicks
+        /// <summary>
+        /// Method used to trigger the client part of Token Registration by Card Number
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void RegisterCardButton_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -140,6 +155,11 @@ namespace BankTokenAppClient
             }
         }
 
+        /// <summary>
+        /// Method used to trigger the client part of Card Number Retrieval by Token
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void GetCardButton_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -151,10 +171,11 @@ namespace BankTokenAppClient
                 MessageBox.Show(ex.Message, "Error in retrieving card number by token", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+        #endregion
 
         private void InputTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
-            //registerMessageLabel.Visibility = Visibility.Hidden;
+            inputMessageLabel.Visibility = Visibility.Hidden;
         }
     }
 }

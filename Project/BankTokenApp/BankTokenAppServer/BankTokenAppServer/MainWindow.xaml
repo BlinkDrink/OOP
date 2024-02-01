@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BankTokenAppServer"
         mc:Ignorable="d"
-        Title="MainWindow" Height="496" Width="785" Closing="Window_Closing">
+        Title="Server" Height="496" Width="785" Closing="Window_Closing">
     <Grid>
         <TextBox x:Name="logTextBox" HorizontalAlignment="Left" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="694" Height="329" IsReadOnly="True" Margin="28,107,0,0"/>
         <Button x:Name="StartServerButton" Click="StartServerButton_Click"  Content="Start Server" HorizontalAlignment="Left" Margin="566,51,0,0" VerticalAlignment="Top" Height="30" Width="156"/>

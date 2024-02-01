@@ -2,25 +2,19 @@
 using System.IO;
 using System.Net.Sockets;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Windows;
 
 namespace BankTokenAppClient
 {
-    // Клас, който представлява клиент, който се свързва със сървъра и изпраща заявки за токенизация
+    /// <summary>
+    /// Represents the client entity that will connect to the server and send different requests
+    /// </summary>
     public class Client
     {
+        #region Properties
         private const int Port = 55555;
 
         private const string ServerAddress = "127.0.0.1";
-
-        private const string UsernamePattern = @"^[a-zA-Z0-9_]{3,20}$";
-
-        private const string PasswordPattern = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$";
-
-        private const string CardNumberPattern = @"^([3-6]\d{3}[\s-]?){3}\d{4}$";
-
-        private const string TokenPattern = @"^([0-2,7-9]\d{3}[\s-]?){3}\d{4}$";
 
         private TcpClient? client;
 
@@ -29,7 +23,9 @@ namespace BankTokenAppClient
         private NetworkStream? stream;
         private StreamReader? reader;
         private StreamWriter? writer;
+        #endregion
 
+        #region Constructors
         public Client()
         {
             try
@@ -45,7 +41,16 @@ namespace BankTokenAppClient
                 MessageBox.Show(ex.Message, "Error connecting to server", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+        #endregion
 
+        #region HelperMethods
+        /// <summary>
+        /// Logs the current client in. Sends username and password to the server
+        /// after which the server responds with an according answer (Login successful or Login failed)
+        /// </summary>
+        /// <param name="username">clients username</param>
+        /// <param name="password">clients password</param>
+        /// <returns>true if the login was succcessful, false otherwise</returns>
         public bool Login(string username, string password)
         {
             try
@@ -79,19 +84,11 @@ namespace BankTokenAppClient
             }
         }
 
-        private bool ValidatePassword(string password)
-        {
-            // Проверява дали паролата е null или празна
-            if (string.IsNullOrEmpty(password))
-            {
-                return false;
-            }
-
-            // Проверява дали паролата отговаря на регулярния израз
-            Regex regex = new Regex(PasswordPattern);
-            return regex.IsMatch(password);
-        }
-
+        /// <summary>
+        /// Simple method used to check whether a given card number is in valid format
+        /// </summary>
+        /// <param name="cardNumber"></param>
+        /// <returns></returns>
         private bool ValidateCardNumber(string cardNumber)
         {
             if (string.IsNullOrEmpty(cardNumber))
@@ -134,6 +131,11 @@ namespace BankTokenAppClient
             return sum % 10 == 0;
         }
 
+        /// <summary>
+        /// Simple method used to check whether a given token is in valid format
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
         private bool ValidateToken(string token)
         {
             if (string.IsNullOrEmpty(token))
@@ -162,6 +164,13 @@ namespace BankTokenAppClient
             return sum % 10 != 0;
         }
 
+        /// <summary>
+        /// Method used to register token by card number
+        /// Sends the card number to the server and the server responds
+        /// with the newly generated token
+        /// </summary>
+        /// <param name="cardNumber">Card number by which the registration of token will be done</param>
+        /// <returns></returns>
         public string RegisterToken(string cardNumber)
         {
             try
@@ -197,6 +206,12 @@ namespace BankTokenAppClient
             }
         }
 
+        /// <summary>
+        /// Method used to retrieve card number by token 
+        /// Requests it from the server and returns it to the view
+        /// </summary>
+        /// <param name="token">Token number by which the server will search for card number</param>
+        /// <returns>The card number (if found), null otherwise</returns>
         public string RetrieveCardNumber(string token)
         {
             try
@@ -232,6 +247,9 @@ namespace BankTokenAppClient
             }
         }
 
+        /// <summary>
+        /// Closes the existing connection with the server if there is one
+        /// </summary>
         public void Close()
         {
             try
@@ -255,20 +273,14 @@ namespace BankTokenAppClient
             }
         }
 
+        /// <summary>
+        /// Checks whether the current client instance is connected to the server
+        /// </summary>
+        /// <returns>True if connected, false otherwise</returns>
         public bool Connected()
         {
             return client != null && client.Connected;
         }
-
-        private bool ValidateUsername(string username)
-        {
-            if (string.IsNullOrEmpty(username))
-            {
-                return false;
-            }
-
-            Regex regex = new Regex(UsernamePattern);
-            return regex.IsMatch(username);
-        }
+        #endregion
     }
 }

@@ -3,6 +3,9 @@ using System.Windows.Controls;
 
 namespace BankTokenAppClient
 {
+    /// <summary>
+    /// Simple class used to validate Bank Card Number format
+    /// </summary>
     public class BankCardValidationRule : ValidationRule
     {
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)

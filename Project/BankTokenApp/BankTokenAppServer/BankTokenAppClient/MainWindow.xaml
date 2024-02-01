@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BankTokenAppClient"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="892" Closing="Window_Closing">
+        Title="Client" Height="450" Width="892" Closing="Window_Closing">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="124*"/>

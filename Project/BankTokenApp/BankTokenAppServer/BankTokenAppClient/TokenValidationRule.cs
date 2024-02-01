@@ -4,6 +4,9 @@ using System.Windows.Controls;
 
 namespace BankTokenAppClient
 {
+    /// <summary>
+    /// Simple ValidationRule used to validate token format
+    /// </summary>
     public class TokenValidationRule : ValidationRule
     {
         private const string TokenPattern = @"^[0-27-9][0-9]{11}[0-9]{4}$";
