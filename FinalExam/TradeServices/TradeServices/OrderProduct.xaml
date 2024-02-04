@@ -11,7 +11,7 @@
         <Label Content="Quantity"/>
         <TextBox x:Name="txtQty" Text="0"/>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="20">
-            <Button Content="Order" Width="100" Margin="5"/>
+            <Button Content="Order" Width="100" Margin="5"  Click="Order_Click"/>
             <Button Content="Cancel" Width="100" Margin="5" Click="Cancel_Click"/>
         </StackPanel>
     </StackPanel>
