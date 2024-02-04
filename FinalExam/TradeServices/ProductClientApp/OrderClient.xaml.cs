@@ -1,5 +1,6 @@
 ﻿using System.Windows;
-using System.Windows.Controls;
+using TradeServices.DelegatesAndEventArgs;
+using TradeServices.UserControls;
 
 namespace ProductClientApp
 {
@@ -8,7 +9,7 @@ namespace ProductClientApp
     /// </summary>
     public partial class OrderClient : Window
     {
-        private UserControl orderProductInstance;
+        private OrderProduct orderProductInstance;
         private IOrderWService client;
 
         public OrderClient()
@@ -22,6 +23,13 @@ namespace ProductClientApp
 
             client = new TradeSOAPService.TradeProducts();
             PopulateProductsComboBox();
+
+            orderProductInstance.OrderPlaced += OrderProduct_OrderPlaced;
+        }
+
+        private void OrderProduct_OrderPlaced(object sender, OrderEventArgs e)
+        {
+            client.Update(Title, e.ProductCode, e.Quantity);
         }
 
         private void PopulateProductsComboBox()

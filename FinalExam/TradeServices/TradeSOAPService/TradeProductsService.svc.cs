@@ -46,7 +46,7 @@ namespace TradeSOAPService
             {
                 while (true)
                 {
-                    lock (lockObject) // Ensure thread-safe access to products
+                    lock (lockProducts) // Ensure thread-safe access to products
                     {
                         foreach (var product in products.Values)
                         {
@@ -62,7 +62,7 @@ namespace TradeSOAPService
                     Thread.Sleep(1000);
                 }
             })
-            { IsBackground = true }; // Make the thread a background thread so it doesn't prevent the application from exiting
+            { IsBackground = true };
             stockManagementThread.Start();
         }
 
@@ -87,7 +87,7 @@ namespace TradeSOAPService
                     {
                         using (StreamWriter sw = new StreamWriter(ReorderFilePath, true)) // Append to the file
                         {
-                            string logEntry = "Client: " + sender.ToString() + ", Product: " + products[productID] + ", Quantity: " + qty.ToString();
+                            string logEntry = "Client: " + sender.ToString() + ", Product: " + products[productID].ToString() + ", Quantity: " + qty.ToString();
                             sw.WriteLine(logEntry);
                         }
                     }

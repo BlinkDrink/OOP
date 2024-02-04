@@ -11,7 +11,6 @@ public interface IOrderWService
     void Update(string sender, string productID, int qty);
 }
 
-// Assuming Product is defined elsewhere, possibly in a shared library
 [DataContract]
 public class Product
 {
@@ -27,10 +26,14 @@ public class Product
     [DataMember]
     public int Qty { get; set; }
 
-    // Constructor
     public Product()
     {
         Qty = 12;
+    }
+
+    public override string ToString()
+    {
+        return $"PID: {ID}, Category: {ProductCategory}, Quantity: {Qty}, Reorder Level: {ReorderLevel}";
     }
 }
 

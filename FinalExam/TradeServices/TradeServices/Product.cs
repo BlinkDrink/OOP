@@ -5,7 +5,7 @@
     /// </summary>
     public class Product
     {
-        private static int _idCounter = 1000; // Static counter to generate unique ID numbers
+        private static int _idCounter = 0; // Static counter to generate unique ID numbers
         public string ID { get; private set; }
         public Category ProductCategory { get; set; }
         public int Qty { get; set; }
@@ -43,7 +43,7 @@
         /// <returns>A string detailing the product's properties.</returns>
         public override string ToString()
         {
-            return $"ID: {ID}, Category: {ProductCategory}, Quantity: {Qty}, Reorder Level: {ReorderLevel}";
+            return $"PID: {ID}, Category: {ProductCategory}, Quantity: {Qty}, Reorder Level: {ReorderLevel}";
         }
     }
 }

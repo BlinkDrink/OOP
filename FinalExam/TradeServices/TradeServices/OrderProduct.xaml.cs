@@ -6,7 +6,6 @@ namespace TradeServices.UserControls
 {
     public partial class OrderProduct : UserControl
     {
-        // Event declaration using the defined delegate
         public event OrderHandler OrderPlaced;
 
         public OrderProduct()
