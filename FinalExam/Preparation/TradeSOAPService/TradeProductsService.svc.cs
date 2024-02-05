@@ -11,7 +11,6 @@ namespace TradeSOAPService
     {
         private Dictionary<string, Product> products = new Dictionary<string, Product>();
         private Random rand = new Random();
-        private readonly object lockObject = new object();
         private readonly object lockProducts = new object(); // For thread-safe access to products
         private readonly object lockFile = new object(); // For thread-safe file operations
         private const string ReorderFilePath = @"reorder.txt"; // Path to the reorder file
